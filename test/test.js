@@ -7,11 +7,27 @@ describe('lrumap', function() {
         should(map).be.instanceOf(LruMap);
         should(map.set).be.Function();
     });
+    it('should construct with empty object argument', function() {
+        var map = new LruMap({});
+        should(map).be.instanceOf(LruMap);
+        should(map.set).be.Function();
+    });
+    it('should construct with nonsense object argument', function() {
+        var map = new LruMap({ crazyPropertyName: 123 });
+        should(map).be.instanceOf(LruMap);
+        should(map.set).be.Function();
+    });
+    it('should construct with numeric argument', function() {
+        var map = new LruMap(123);
+        should(map).be.instanceOf(LruMap);
+        should(map.set).be.Function();
+    });
     it('should have the documented interface', function() {
         var map = new LruMap();
         should(map.length).be.equal(0);
         should(map.set).be.instanceOf(Function);
         should(map.get).be.instanceOf(Function);
+        should(map.del).be.instanceOf(Function);
         should(map.has).be.instanceOf(Function);
         should(map.newestKey).be.instanceOf(Function);
         should(map.oldestKey).be.instanceOf(Function);
@@ -63,6 +79,49 @@ describe('lrumap', function() {
         should(map.newestValue()).be.equal(2);
         should(map.oldestValue()).be.equal(1);
     });
+    it('should preserve value types', function () {
+        var map = new LruMap(),
+            obj = { duck: true },
+            date = new Date(),
+            buf = new Buffer('hello', 'utf8'),
+            num = 3.14159265358979323,
+            arr = [42];
+        map.set('string', 'value');
+        map.set('object', obj);
+        map.set('Buffer', buf);
+        map.set('date', date);
+        map.set('number', num);
+        map.set('true', true);
+        map.set('false', false);
+        map.set('null', null);
+        map.set('NaN', NaN);
+        map.set('array', arr);
+        map.set('undefined', undefined);
+        should(map.length).be.equal(11);
+        
+        should(map.get('string')).be.equal('value');
+        should(map.get('object')).be.equal(obj);
+        should(map.get('Buffer')).be.instanceOf(Buffer);
+        should(map.get('Buffer')).be.equal(buf);
+        should(map.get('date')).be.equal(date);
+        should(map.get('date')).be.equal(date);
+        should(map.get('number')).be.equal(num);
+        should(map.get('true')).be.equal(true);
+        should(map.get('false')).be.equal(false);
+        should(map.get('null')).be.equal(null);
+        should(map.get('NaN')).be.NaN;
+        should(map.get('array')).be.equal(arr);
+        should(map.get('undefined')).be.equal(undefined);
+    });
+    it('should not initially have any keys from Object', function () {
+        var map = new LruMap(),
+            key;
+        Object.getOwnPropertyNames(Object.getPrototypeOf({}))
+        .forEach(function(key) {
+            should(map.has(key)).be.equal(false);
+            should(map.get(key)).be.equal(undefined);
+        });
+    });
     it('should remove keys properly', function () {
         var map = new LruMap();
         should(map.has('1')).be.equal(false);
@@ -81,7 +140,7 @@ describe('lrumap', function() {
         for (var i = 0; i < 10000; ++i)
             map.set(i, 'value' + i);
     });
-    it('should insert and remove 10k items 10x, fast', function() {
+    it('should insert and remove 10k items 10x (oldest first), fast', function() {
         var map = new LruMap(), rep;
         for (rep = 0; rep < 10; ++rep) {
             for (var i = 0; i < 10000; ++i)
@@ -90,7 +149,7 @@ describe('lrumap', function() {
                 map.del(i);
         }
     });
-    it('should insert and remove 10k items 10x (other order), fast', function() {
+    it('should insert and remove 10k items 10x (newest first), fast', function() {
         var map = new LruMap(), rep;
         for (rep = 0; rep < 10; ++rep) {
             for (var i = 0; i < 10000; ++i)

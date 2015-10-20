@@ -18,6 +18,7 @@
         this._head = null;
         this._tail = null;
         this._count = 0;
+        this._options = options;
     }
     LruMap.prototype.peek = peek;
     LruMap.prototype.set = set;
@@ -26,6 +27,8 @@
     LruMap.prototype.has = has;
     LruMap.prototype.some = some;
     LruMap.prototype.map = map;
+    LruMap.prototype.keys = keys;
+    LruMap.prototype.values = values;
     LruMap.prototype.reduce = reduce;
     LruMap.prototype.oldestKey = oldestKey;
     LruMap.prototype.newestKey = newestKey;
@@ -120,9 +123,29 @@
     function map(callback, thisArg) {
         var node, next, result = [];
         
+        for (node = this._tail; node; node = next) {
+            next = node.prev;
+            result.push(callback.call(thisArg, node.value, node.key, this));
+        }
+        return result;
+    }
+    
+    function keys() {
+        var node, next, result = [];
+        
+        for (node = this._tail; node; node = next) {
+            next = node.prev;
+            result.push(node.key);
+        }
+        return result;
+    }
+    
+    function values() {
+        var node, next, result = [];
+        
         for (node = this._head; node; node = next) {
             next = node.next;
-            result.push(callback.call(thisArg, node.value, node.key, this));
+            result.push(node.value);
         }
         return result;
     }
@@ -200,6 +223,9 @@
             if (response !== undefined)
                 return response;
             
+		      if (this._options.dispose)
+                this._options.dispose(node.value, node.key, this);
+
             delete this._lookup[key];
             remove(this, node);
         }
