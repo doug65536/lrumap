@@ -273,19 +273,16 @@
     }
     
     function remove(map, node) {
-        if (map._head === map._tail) {
-            // Remove only node
-            map._head = null;
-            map._tail = null;
-        } else if (node === map._head) {
-            // Remove first node
-            node.next.prev = null;
+        if (node.prev)
+            node.prev.next = node.next;
+        else
             map._head = node.next;
-        } else if (node === map._tail) {
-            // Remove last node
-            node.prev.next = null;
-            map._tail = node;
-        }
+        
+        if (node.next)
+            node.next.prev = node.prev;
+        else
+            map._tail = node.prev;
+        
         node.next = null;
         node.prev = null;
         --map._count;

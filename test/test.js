@@ -38,7 +38,7 @@ describe('lrumap', function() {
         should(map.delOldestUntil).be.instanceOf(Function);
         should(map.delNewestUntil).be.instanceOf(Function);
     });
-    it('should store and retrieve values', function() {
+    it('should store and retrieve data', function() {
         var map = new LruMap();
         should(map.length).be.equal(0);
         should(map.has('a')).be.equal(false);
@@ -78,6 +78,8 @@ describe('lrumap', function() {
         should(map.oldestKey()).be.equal('a');
         should(map.newestValue()).be.equal(2);
         should(map.oldestValue()).be.equal(1);
+        
+        should(map.values()).be.deepEqual([1, 2]);
     });
     it('should preserve value types', function () {
         var map = new LruMap(),
@@ -134,6 +136,35 @@ describe('lrumap', function() {
         should(map.has('1')).be.equal(false);
         should(map.del('1')).be.equal(false);
         should(map.length).be.equal(0);
+    });
+    it('should update lru order when getting', function () {
+        var map = new LruMap(),
+            chk,
+            expect,
+            index,
+            checked;
+        for (var i = 1; i <= 10; ++i)
+            map.set(i, 'value' + i);
+
+        chk = [
+            3, 7, 4, 1, 3, 4
+        ];
+        
+        expect = [
+            2, 5, 6, 8, 9, 10, 7, 1, 3, 4
+        ];
+        
+        chk.forEach(function(value) {
+            map.get(value);
+        });
+        
+        index = 0;
+        checked = 0;
+        map.someOldest(function(value, key, passedMap) {
+            ++checked;
+            should(key).be.equal(expect[index++].toString());
+        });
+        should(checked).be.equal(10);
     });
     it('should insert 10k items fast', function() {
         var map = new LruMap();
