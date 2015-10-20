@@ -1,7 +1,8 @@
 /* unittests: lrumap */
 ;(function(global) {
+    "use strict";
+    
     if (module && module.exports) {
-        console.log('node');
         module.exports = LruMap;
     } else if (global.define) {
         global.define(LruMap);
@@ -13,7 +14,7 @@
         if (typeof options === 'number')
             options = { limit: options };
 
-        this._lookup = {};
+        this._lookup = Object.create(null);
         this._head = null;
         this._tail = null;
         this._count = 0;
@@ -23,6 +24,9 @@
     LruMap.prototype.get = get;
     LruMap.prototype.del = del;
     LruMap.prototype.has = has;
+    LruMap.prototype.some = some;
+    LruMap.prototype.map = map;
+    LruMap.prototype.reduce = reduce;
     LruMap.prototype.oldestKey = oldestKey;
     LruMap.prototype.newestKey = newestKey;
     LruMap.prototype.oldestValue = oldestValue;
@@ -47,49 +51,50 @@
     });
     
     function has(key) {
-        return hOP(this._lookup, key);
+        return this._lookup[key] !== undefined;
     }
     
     // Returns true if the key existed,
     // without updating LRU list
     function peek(key) {
-        return hOP(this._lookup, key) && this._lookup[key].value;
+        return this._lookup[key] !== undefined && this._lookup[key].value;
     }
     
     // Returns true if the key already existed
     function set(key, value) {
-        var node;
-        if (hOP(this._lookup, key)) {
+        if (typeof key !== 'string')
+            key = String(key);
+        var node = this._lookup[key];
+        if (node !== undefined) {
             // Update
-            node = this._lookup[key];
             node.value = value;
-            remove.call(this, node);
-            append.call(this, node);
+            remove(this, node);
+            append(this, node);
             return true;
         } else {
             // New
             node = new Node(key, value);
             this._lookup[key] = node;
-            append.call(this, node);
+            append(this, node);
             return false;
         }
     }
     
     function get(key) {
-        var node;
-        if (hOP(this._lookup, key)) {
+        var node = this._lookup[key];
+        if (node !== undefined) {
             node = this._lookup[key];
-            remove.call(this, node);
-            append.call(this, node);
+            remove(this, node);
+            append(this, node);
             return node.value;
         }
     }
     
     function del(key) {
-        var node;
-        if (hOP(this._lookup, key)) {
+        var node = this._lookup[key];
+        if (node !== undefined) {
             node = this._lookup[key];
-            remove.call(this, node);
+            remove(this, node);
             delete this._lookup[key];
             return true;
         }
@@ -112,9 +117,47 @@
         return (this._tail && this._tail.value) || undefined;
     }
     
+    function map(callback, thisArg) {
+        var node, next, result = [];
+        
+        for (node = this._head; node; node = next) {
+            next = node.next;
+            result.push(callback.call(thisArg, node.value, node.key, this));
+        }
+        return result;
+    }
+    
+    function some(callback, thisArg) {
+        var node, next, response;
+        
+        for (node = this._head; node; node = next) {
+            next = node.next;
+            response = callback.call(thisArg, node.value, node.key, this);
+            if (response === true)
+                return true;
+        }
+        return false;
+    }
+    
+    function reduce(callback, initial) {
+        var node, next, response;
+        
+        node = this._head;
+        if (arguments.length === 1) {
+            initial = node.value;
+            node = node.next;
+        }
+        for ( ; node; node = next) {
+            next = node.next;
+            initial = callback(initial, node.value, node.key, this);
+        }
+        return initial;
+    }
+    
     // Call the callback with the oldest item first,
     // followed by progressively newer items,
-    // until the callback returns not undefined
+    // until the callback returns true
+    // Returns last callback return value or false
     function someOldest(callback, thisArg) {
         var node, 
             next,
@@ -122,22 +165,25 @@
         for (node = this._head; node; node = next) {
             next = node.next;
             response = callback.call(thisArg, node.value, node.key, this);
-            if (response !== undefined)
-                return response;
+            if (response === true)
+                return true;
         }
+        return false;
     }
     
     // Call the callback with the newest item first,
     // followed by progressively older items,
-    // until the callback returns not undefined
-    function someNewest(callback) {
+    // until the callback returns true
+    // Returns last callback return value or false
+    function someNewest(callback, thisArg) {
         var node,
             response;
         for (node = this._tail; node; node = node.prev) {
             response = callback.call(thisArg, node.value, node.key, this);
-            if (response !== undefined)
-                return response;
+            if (response === true)
+                return true;
         }
+        return false;
     }
     
     // Pass items to the callback, oldest first, until
@@ -155,7 +201,7 @@
                 return response;
             
             delete this._lookup[key];
-            remove.call(this, node);
+            remove(this, node);
         }
     }
     
@@ -174,7 +220,7 @@
                 return response;
             
             delete this._lookup[key];
-            remove.call(this, node);
+            remove(this, node);
         }
     }
     
@@ -187,39 +233,35 @@
         this.prev = null;
     }
     
-    function append(node) {
-        node.prev = this._tail;
+    function append(map, node) {
+        node.prev = map._tail;
         node.next = null;
-        if (this._tail) {
-            this._tail.next = node;
-            this._tail = node;
+        if (map._tail) {
+            map._tail.next = node;
+            map._tail = node;
         } else {
-            this._head = node;
-            this._tail = node;
+            map._head = node;
+            map._tail = node;
         }
-        ++this._count;
+        ++map._count;
     }
     
-    function remove(node) {
-        if (this._head === this._tail) {
-            // Remove last node
-            this._head = null;
-            this._tail = null;
-        } else if (node === this._head) {
+    function remove(map, node) {
+        if (map._head === map._tail) {
+            // Remove only node
+            map._head = null;
+            map._tail = null;
+        } else if (node === map._head) {
             // Remove first node
             node.next.prev = null;
-            this._head = node.next;
-        } else if (node === this._tail) {
+            map._head = node.next;
+        } else if (node === map._tail) {
             // Remove last node
             node.prev.next = null;
-            this._tail = node;
+            map._tail = node;
         }
         node.next = null;
         node.prev = null;
-        --this._count;
-    }
-    
-    function hOP(obj, key) {
-        return Object.prototype.hasOwnProperty.call(obj, key);
+        --map._count;
     }
 }(this));
