@@ -19,7 +19,7 @@ Returns true if the key already existed.
 Creates or updates an entry in the map with the specified
 key and value. 
 
-Updates the LRU data to treat this key as the most recently
+Updates the LRU data to treat *key* as the most recently
 used key.
 
 ### `get(key)`
@@ -40,9 +40,9 @@ Does not update LRU data.
 
 ### `has(key)`
 
-Returns true if the key exists.
+Returns `true` if the key exists.
 
-Returns false if the key does not exist.
+Returns `false` if the key does not exist.
 
 Does not update LRU data.
 
@@ -50,14 +50,28 @@ Does not update LRU data.
 
 Returns `undefined` if the map is empty.
 
-Returns the key of most recently used 
+Returns the *key* of most recently used 
 entry if the map is not empty.
 
 ### `oldestKey()`
 
 Returns `undefined` if the map is empty.
 
-Returns the key of least recently used 
+Returns the *key* of least recently used 
+entry if the map is not empty.
+
+### `newestKey()`
+
+Returns `undefined` if the map is empty.
+
+Returns the *value* of most recently used 
+entry if the map is not empty.
+
+### `oldestKey()`
+
+Returns `undefined` if the map is empty.
+
+Returns the *value* of least recently used 
 entry if the map is not empty.
 
 ### `someNewest(callback, thisArg)`
