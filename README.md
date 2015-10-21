@@ -72,6 +72,14 @@ Returns the stored value if the key existed.
 
 Does not update LRU data.
 
+### `del(key)`
+
+Removes the key from the map.
+
+Returns `true` if the key existed.
+
+Returns `false` if the key did not exist.
+
 ### `has(key)`
 
 Returns `true` if the key exists.
