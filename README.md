@@ -141,3 +141,10 @@ occur if the callback returns `true`. All other values
 will be ignored. This is consistent with the behavior
 of `Array.prototype.some`.
 
+
+## Running unit tests
+
+If you clone or fork this repository, you can run the
+included unit tests by executing the following command:
+
+`npm test`
