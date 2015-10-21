@@ -2,6 +2,15 @@
 
 ![Build Status](https://api.travis-ci.org/doug65536/lrumap.svg)
 
+## Synopsis
+
+A fast key/value pair storage container with O(1) access to
+newest and oldest nodes, and O(n) iteration in forward or 
+reverse order (LRU or MRU first).
+
+Never does a linear search, maintains a linked list of nodes
+for items, and uses an object for fast key lookup by property.
+
 ## Installing
 
 `npm install ???`  *not published yet*
