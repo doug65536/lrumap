@@ -123,8 +123,9 @@ starting at the newest (most recently used) item.
 
 The iteration will end and no more callbacks will
 occur if the callback returns `true`. All other values
-will be ignored. This is consistent with the behavior
-of `Array.prototype.some`.
+will be ignored and the iteration will continue.
+This is consistent with the behavior of
+`Array.prototype.some`.
 
 **`callback`** defined as `function(value, key, map)`
 
@@ -143,8 +144,9 @@ starting at the oldest (least recently used) item.
 
 The iteration will end and no more callbacks will
 occur if the callback returns `true`. All other values
-will be ignored. This is consistent with the behavior
-of `Array.prototype.some`.
+will be ignored and the iteration will continue.
+This is consistent with the behavior of
+`Array.prototype.some`.
 
 **`callback`** defined as `function(value, key, map)`
 
