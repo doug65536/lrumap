@@ -116,6 +116,22 @@ Returns `undefined` if the map is empty.
 Returns the value of least recently used 
 entry if the map is not empty.
 
+### keys()
+
+Returns an array of all keys in the map.
+
+It is guaranteed to be in the same order as the
+values returned by `values()`, only if the
+map has not been changed between the calls.
+
+### values()
+
+Returns an array of all values in the map.
+
+It is guaranteed to be in the same order as the
+values returned by `keys()`, only if the
+map has not been changed between the calls.
+
 ### `someNewest(callback, thisArg)`
 
 The callback is called once for each item, in order, 
