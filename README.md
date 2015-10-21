@@ -103,7 +103,6 @@ entry if the map is not empty.
 
 The callback is called once for each item, in order, 
 starting at the newest (most recently used) item.
-Each callback receives the following arguments:
 
 **`callback`** defined as `function(value, key, map)`
 
@@ -124,7 +123,6 @@ of `Array.prototype.some`.
 
 The callback is called once for each item, in order, 
 starting at the oldest (least recently used) item.
-Each callback receives the following arguments:
 
 **`callback`** defined as `function(value, key, map)`
 
