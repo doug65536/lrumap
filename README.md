@@ -11,6 +11,9 @@ reverse order (LRU or MRU first).
 Never does a linear search, maintains a linked list of nodes
 for items, and uses an object for fast key lookup by property.
 
+The key must be a string. If it is not a string, it will
+be converted automatically with String(key) by all methods.
+
 ## Installing
 
 `npm install ???`  *not published yet*
@@ -36,7 +39,6 @@ testmap.length = 0;
 ```
 
 ## API
-
 
 ### `length`
 
