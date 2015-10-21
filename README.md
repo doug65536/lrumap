@@ -2,9 +2,34 @@
 
 ![Build Status](https://api.travis-ci.org/doug65536/lrumap.svg)
 
+## Installing
+
+`npm install ???`  *not published yet*
+
+## Example:
+```
+var LruMap = require('lrumap');
+
+var testmap = new LruMap();
+
+testmap.set('a', 'alpha');
+testmap.set('z', 'omega');
+
+console.log('stored', testmap.length, 'items');
+console.log('stored', testmap.get('a'));
+console.log('stored', testmap.get('z'));
+
+testmap.someOldest(function(value, key) {
+    console.log(key, '=', value);
+});
+
+testmap.length = 0;
+```
+
 ## API
 
-### length
+
+### `length`
 
 When read, this returns the number of keys in the map
 
