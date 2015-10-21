@@ -76,7 +76,11 @@ entry if the map is not empty.
 
 ### `someNewest(callback, thisArg)`
 
-`callback` defined as `function(value, key, map)`
+**`callback`** defined as `function(value, key, map)`
+
+The callback is called once for each item, in order, 
+starting at the newest (most recently used) item.
+Each callback receives the following arguments:
 
 **`value`** is the value of the item.
 
@@ -84,4 +88,27 @@ entry if the map is not empty.
 
 **`map`** is the lrumap instance being iterated.
 
+The iteration will end and no more callbacks will
+occur if the callback returns `true`. All other values
+will be ignored. This is consistent with the behavior
+of `Array.prototype.some`.
+
+### `someOldest(callback, thisArg)`
+
+**`callback`** defined as `function(value, key, map)`
+
+The callback is called once for each item, in order, 
+starting at the oldest (least recently used) item.
+Each callback receives the following arguments:
+
+**`value`** is the value of the item.
+
+**`key`** is the key of the item.
+
+**`map`** is the lrumap instance being iterated.
+
+The iteration will end and no more callbacks will
+occur if the callback returns `true`. All other values
+will be ignored. This is consistent with the behavior
+of `Array.prototype.some`.
 
