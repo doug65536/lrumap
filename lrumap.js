@@ -1,4 +1,8 @@
-/* unittests: lrumap */
+/*
+ * The MIT License (MIT). See LICENCE file for more information
+ * Copyright (c) 2015 Doug Gale
+ */
+
 ;(function(global) {
     "use strict";
     
@@ -18,7 +22,7 @@
         this._head = null;
         this._tail = null;
         this._count = 0;
-        this._options = options;
+        this._options = options || {};
     }
     LruMap.prototype.peek = peek;
     LruMap.prototype.set = set;
@@ -36,16 +40,15 @@
     LruMap.prototype.newestValue = newestValue;
     LruMap.prototype.someOldest = someOldest;
     LruMap.prototype.someNewest = someNewest;
-    LruMap.prototype.delOldestUntil = delOldestUntil;
-    LruMap.prototype.delNewestUntil = delNewestUntil;
+    LruMap.prototype.delOldestWhile = delOldestWhile;
+    LruMap.prototype.delNewestWhile = delNewestWhile;
     
     Object.defineProperty(LruMap.prototype, 'length', {
         set: function(value) {
             if (value < this._count) {
-                this.delOldestUntil(function() {
-                    if (this._count <= value)
-                        return true;
-                });
+                this.delOldestWhile(function() {
+                    return this._count > value;
+                }, this);
             }
         },
         get: function() {
@@ -71,8 +74,12 @@
         if (node !== undefined) {
             // Update
             node.value = value;
-            remove(this, node);
-            append(this, node);
+            // If not at the end already
+            if (node.next) {
+                // Move it to the end
+                remove(this, node);
+                append(this, node);
+            }
             return true;
         } else {
             // New
@@ -210,39 +217,45 @@
     }
     
     // Pass items to the callback, oldest first, until
-    // the callback returns not undefined
-    // Returns the value returned by the callback
+    // the callback returns falsy.
+    // The callback is consulted before removing each
+    // entry.
+    // Returns callback return value if the 
+    // callback interrupted iteration.
     // Returns undefined if all items deleted
-    function delOldestUntil(callback, thisArg) {
+    function delOldestWhile(callback, thisArg) {
         var node, 
             next,
             response;
         for (node = this._head; node; node = next) {
             next = node.next;
             response = callback.call(thisArg, node.value, node.key, this);
-            if (response !== undefined)
+            if (!response)
                 return response;
             
-		      if (this._options.dispose)
+		    if (this._options.dispose)
                 this._options.dispose(node.value, node.key, this);
 
-            delete this._lookup[key];
+            delete this._lookup[node.key];
             remove(this, node);
         }
     }
     
     // Pass items to the callback, newest first, until
-    // the callback returns not undefined
-    // Returns the value returned by the callback
+    // the callback returns falsy.
+    // The callback is consulted before removing each
+    // entry.
+    // Returns callback return value if the 
+    // callback interrupted iteration.
     // Returns undefined if all items deleted
-    function delNewestUntil(callback, thisArg) {
+    function delNewestWhile(callback, thisArg) {
         var node, 
             next,
             response;
         for (node = this._tail; node; node = next) {
             next = node.prev;
             response = callback.call(thisArg, node.value, node.key, this);
-            if (response !== undefined)
+            if (!response)
                 return response;
             
             delete this._lookup[key];

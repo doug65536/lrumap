@@ -1,3 +1,11 @@
+/*
+ * The MIT License (MIT). See LICENCE file for more information
+ * Copyright (c) 2015 Doug Gale
+ */
+
+"use strict"
+
+
 var should = require('should'),
     LruMap = require('../lrumap.js');
 
@@ -35,8 +43,8 @@ describe('lrumap', function() {
         should(map.someOldest).be.instanceOf(Function);
         should(map.oldestValue).be.instanceOf(Function);
         should(map.newestValue).be.instanceOf(Function);
-        should(map.delOldestUntil).be.instanceOf(Function);
-        should(map.delNewestUntil).be.instanceOf(Function);
+        should(map.delOldestWhile).be.instanceOf(Function);
+        should(map.delNewestWhile).be.instanceOf(Function);
     });
     it('should store and retrieve data', function() {
         var map = new LruMap();
@@ -166,6 +174,39 @@ describe('lrumap', function() {
         });
         should(checked).be.equal(10);
     });
+    it('should ignore attempts to increase the length', function() {
+        var map = new LruMap();
+        map.length = -1;
+        should(map.length).be.equal(0);
+        
+        for (var i = 0; i < 10; ++i)
+            map.set(i, 'value_' + i);
+
+        map.length = i * 2 + 1;
+        should(map.length).be.equal(i);
+    });
+    it('should dispose the oldest keys if you decrease the length', function() {
+        var map = new LruMap();
+
+        for (var i = 0; i < 5; ++i)
+            map.set(i, 'value_' + i);
+        
+        should(map.length).be.equal(5);
+        map.length = 3;
+        should(map.length).be.equal(3);
+        
+        should(map.has('0')).be.equal(false);
+        should(map.has('1')).be.equal(false);
+        should(map.has('2')).be.equal(true);
+        should(map.has('3')).be.equal(true);
+        should(map.has('4')).be.equal(true);
+
+        should(map.oldestKey()).be.equal('2');
+        should(map.oldestValue()).be.equal('value_2');
+
+        should(map.newestKey()).be.equal('4');
+        should(map.newestValue()).be.equal('value_4');
+    });
     it('should insert 10k items fast', function() {
         var map = new LruMap();
         for (var i = 0; i < 10000; ++i)
@@ -224,7 +265,7 @@ describe('lrumap', function() {
         should(track).be.equal(0);
     });
     it('should stop when you return true from some* callback', function () {
-        var map = new LruMap(), track, skipped;
+        var map = new LruMap(), track, skipped, checked;
         for (var i = 0; i < 10; ++i)
             map.set(i, 'value' + i);
         track = false;
