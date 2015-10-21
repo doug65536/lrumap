@@ -121,7 +121,7 @@ entry if the map is not empty.
 Returns an array of all keys in the map.
 
 It is guaranteed to be in the same order as the
-values returned by `values()`, only if the
+values returned by [`values()`](#values), only if the
 map has not been changed between the calls.
 
 ### `values()`
@@ -129,7 +129,7 @@ map has not been changed between the calls.
 Returns an array of all values in the map.
 
 It is guaranteed to be in the same order as the
-values returned by `keys()`, only if the
+values returned by [`keys()`](#keys), only if the
 map has not been changed between the calls.
 
 ### `someNewest(callback, thisArg)`
