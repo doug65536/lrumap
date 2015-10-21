@@ -141,7 +141,7 @@ The iteration will end and no more callbacks will
 occur if the callback returns `true`. All other values
 will be ignored and the iteration will continue.
 This is consistent with the behavior of
-`Array.prototype.some`.
+[`Array.prototype.some`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some).
 
 **`callback`** defined as `function(value, key, map)`
 
@@ -162,7 +162,7 @@ The iteration will end and no more callbacks will
 occur if the callback returns `true`. All other values
 will be ignored and the iteration will continue.
 This is consistent with the behavior of
-`Array.prototype.some`.
+[`Array.prototype.some`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some).
 
 **`callback`** defined as `function(value, key, map)`
 
