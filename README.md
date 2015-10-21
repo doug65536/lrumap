@@ -102,14 +102,14 @@ Returns `undefined` if the map is empty.
 Returns the key of least recently used 
 entry if the map is not empty.
 
-### `newestKey()`
+### `newestValue()`
 
 Returns `undefined` if the map is empty.
 
 Returns the value of most recently used 
 entry if the map is not empty.
 
-### `oldestKey()`
+### `oldestValue()`
 
 Returns `undefined` if the map is empty.
 
