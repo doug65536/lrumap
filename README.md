@@ -78,10 +78,10 @@ entry if the map is not empty.
 
 `callback` defined as `function(value, key, map)`
 
-*`value`* is the value of the item.
+**`value`** is the value of the item.
 
-`key` is the key of the item.
+**`key`** is the key of the item.
 
-`map` is the lrumap instance being iterated.
+**`map`** is the lrumap instance being iterated.
 
 
