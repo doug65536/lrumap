@@ -13,8 +13,8 @@ oldest keys are disposed, in oldest first order.
 
 ### `set(key, value)`
 
-Returns false if the key was created.
-Returns true if the key already existed.
+Returns `false` if the key was created.
+Returns `true` if the key already existed.
 
 Creates or updates an entry in the map with the specified
 key and value. 
@@ -24,7 +24,7 @@ used key.
 
 ### `get(key)`
 
-Returns undefined if the key did not exist.
+Returns `undefined` if the key did not exist.
 Returns the stored value if the key existed.
 
 Updates the LRU data to treat this key as the most recently
@@ -32,7 +32,7 @@ used key.
 
 ### `peek(key)`
 
-Returns undefined if the key did not exist.
+Returns `undefined` if the key did not exist.
 
 Returns the stored value if the key existed.
 
@@ -50,46 +50,38 @@ Does not update LRU data.
 
 Returns `undefined` if the map is empty.
 
-Returns the *key* of most recently used 
+Returns the key of most recently used 
 entry if the map is not empty.
 
 ### `oldestKey()`
 
 Returns `undefined` if the map is empty.
 
-Returns the *key* of least recently used 
+Returns the key of least recently used 
 entry if the map is not empty.
 
 ### `newestKey()`
 
 Returns `undefined` if the map is empty.
 
-Returns the *value* of most recently used 
+Returns the value of most recently used 
 entry if the map is not empty.
 
 ### `oldestKey()`
 
 Returns `undefined` if the map is empty.
 
-Returns the *value* of least recently used 
+Returns the value of least recently used 
 entry if the map is not empty.
 
 ### `someNewest(callback, thisArg)`
 
 callback defined as `function(value, key, map)`
 
-*value* is the value of the item.
+`value` is the value of the item.
 
-*key* is the key of the item.
+`key` is the key of the item.
 
-*map* is the lrumap instance being iterated.
+`map` is the lrumap instance being iterated.
 
-### etc...
-
-        should(map.someNewest).be.instanceOf(Function);
-        should(map.someOldest).be.instanceOf(Function);
-        should(map.oldestValue).be.instanceOf(Function);
-        should(map.newestValue).be.instanceOf(Function);
-        should(map.delOldestUntil).be.instanceOf(Function);
-        should(map.delNewestUntil).be.instanceOf(Function);
 
