@@ -117,7 +117,7 @@ of `Array.prototype.some`.
 
 **`key`** is the key of the item.
 
-**`map`** is the lrumap instance being iterated.
+**`map`** is the LruMap instance being iterated.
 
 ### `someOldest(callback, thisArg)`
 
@@ -137,7 +137,7 @@ of `Array.prototype.some`.
 
 **`key`** is the key of the item.
 
-**`map`** is the lrumap instance being iterated.
+**`map`** is the LruMap instance being iterated.
 
 
 ## Running unit tests
