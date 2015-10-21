@@ -160,5 +160,7 @@ If you want to auto-run tests on save,
 [TDD](https://en.wikipedia.org/wiki/Test-driven_development)
 style, I suggest `nodemon`.
 
-`sudo npm install -g nodemon`
-`nodemon -x 'npm test'`
+```
+sudo npm install -g nodemon
+nodemon -x 'npm test'
+```
