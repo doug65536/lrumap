@@ -146,3 +146,10 @@ If you clone or fork this repository, you can run the
 included unit tests by executing the following command:
 
 `npm test`
+
+If you want to auto-run tests on save,
+[TDD](https://en.wikipedia.org/wiki/Test-driven_development)
+style, I suggest `nodemon`.
+
+`sudo npm install -g nodemon`
+`nodemon -x 'npm test'`
