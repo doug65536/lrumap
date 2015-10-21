@@ -82,6 +82,8 @@ The callback is called once for each item, in order,
 starting at the newest (most recently used) item.
 Each callback receives the following arguments:
 
+**`this`** is set to the value supplied in `thisArg`
+
 **`value`** is the value of the item.
 
 **`key`** is the key of the item.
@@ -100,6 +102,8 @@ of `Array.prototype.some`.
 The callback is called once for each item, in order, 
 starting at the oldest (least recently used) item.
 Each callback receives the following arguments:
+
+**`this`** is set to the value supplied in `thisArg`
 
 **`value`** is the value of the item.
 
