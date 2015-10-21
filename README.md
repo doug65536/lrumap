@@ -101,11 +101,11 @@ entry if the map is not empty.
 
 ### `someNewest(callback, thisArg)`
 
-**`callback`** defined as `function(value, key, map)`
-
 The callback is called once for each item, in order, 
 starting at the newest (most recently used) item.
 Each callback receives the following arguments:
+
+**`callback`** defined as `function(value, key, map)`
 
 **`this`** is set to the value supplied in `thisArg`
 
@@ -122,11 +122,11 @@ of `Array.prototype.some`.
 
 ### `someOldest(callback, thisArg)`
 
-**`callback`** defined as `function(value, key, map)`
-
 The callback is called once for each item, in order, 
 starting at the oldest (least recently used) item.
 Each callback receives the following arguments:
+
+**`callback`** defined as `function(value, key, map)`
 
 **`this`** is set to the value supplied in `thisArg`
 
