@@ -76,9 +76,9 @@ entry if the map is not empty.
 
 ### `someNewest(callback, thisArg)`
 
-callback defined as `function(value, key, map)`
+`callback` defined as `function(value, key, map)`
 
-`value` is the value of the item.
+*`value`* is the value of the item.
 
 `key` is the key of the item.
 
