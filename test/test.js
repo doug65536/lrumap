@@ -340,34 +340,58 @@ describe('lrumap', function() {
         }, thisArg)).be.equal(false);
         should(firstKey).be.equal('10')
     });
-    it('should provide basic iteration facilities', function() {
+    it('should provide working "map" iterators', function() {
         var map = new LruMap(),
-            rep,
-            track, 
-            thisArg, 
-            oldestFirstKey, 
-            newestFirstKey;
+            thisArg = { passed: 42 },
+            firstKey,
+            mapped;
         
         for (var i = 1; i <= 10; ++i)
             map.set(i, 'value' + i);
-        
-        thisArg = { passed: 42 };
-        should(map.someOldest(function(value, key, passedMap) {
+
+        mapped = map.mapOldest(function(value, key, passedMap) {
             should(key).be.instanceOf(String);
-            if (oldestFirstKey === undefined)
-                oldestFirstKey = key;
+            if (firstKey === undefined)
+                firstKey = key;
             should(this).be.equal(thisArg);
             should(this.passed).be.equal(42);
             should(passedMap).be.equal(map);
             should(+key).be.within(1, 10);
             should(value).be.equal('value' + key);
-        }, thisArg)).be.equal(false);
-        should(oldestFirstKey).be.equal('1')
+            
+            return 'mapped_'+ value;
+        }, thisArg);
+        should(firstKey).be.equal('1');
+        should(mapped).be.Array;
+        should(mapped).be.length(10);
+        mapped.forEach(function(value, index, mapped) {
+            should(value).be.equal('mapped_value' + (index+1));
+        });
+
+        firstKey = undefined;
+        mapped = map.mapNewest(function(value, key, passedMap) {
+            should(key).be.instanceOf(String);
+            if (firstKey === undefined)
+                firstKey = key;
+            should(this).be.equal(thisArg);
+            should(this.passed).be.equal(42);
+            should(passedMap).be.equal(map);
+            should(+key).be.within(1, 10);
+            should(value).be.equal('value' + key);
+            return 'mapped_' + value;
+        }, thisArg);
+        should(firstKey).be.equal('10')
+        should(mapped).be.Array;
+        should(mapped).be.length(10);
+        mapped.forEach(function(value, index, mapped) {
+            should(value).be.equal('mapped_value' + (10 - index));
+        });
     });
     it('should do ordered iterations in the correct order', function() {
-        var map = new LruMap(), rep, track;
+        var map = new LruMap(), rep, track, mapped;
         for (var i = 0; i < 10; ++i)
             map.set(i, 'value' + i);
+
         track = 0;
         should(map.someOldest(function(value, key, passedMap) {
             should(value).be.equal('value' + track);
@@ -378,6 +402,40 @@ describe('lrumap', function() {
             should(key).be.equal((--track).toString());
             should(value).be.equal('value' + track);
         })).be.equal(false);
+        should(track).be.equal(0);
+
+        track = 0;
+        should(map.mapOldest(function(value, key, passedMap) {
+            should(value).be.equal('value' + track);
+            should(key).be.equal((track++).toString());
+            return key + '=' + value;
+        })).be.length(10);
+        should(track).be.equal(10);
+        should(map.mapNewest(function(value, key, passedMap) {
+            should(key).be.equal((--track).toString());
+            should(value).be.equal('value' + track);
+            return key + '=' + value;
+        })).be.length(10);
+        should(track).be.equal(0);
+
+        track = 0;
+        should(map.reduce(function(total, value, key, passedMap) {
+            should(value).be.equal('value' + track);
+            should(key).be.equal((track++).toString());
+            if (+key & 1)
+                return total * (+key);
+            else
+                return total + (+key);
+        }, 42)).be.equal((((((((((42+0)*1)+2)*3)+4)*5)+6)*7)+8)*9);
+        should(track).be.equal(10);
+        should(map.reduceRight(function(total, value, key, passedMap) {
+            should(key).be.equal((--track).toString());
+            should(value).be.equal('value' + track);
+            if (+key & 1)
+                return total * (+key);
+            else
+                return total + (+key);
+        }, 42)).be.equal(((((((((42*9)+8)*7)+6)*5)+4)*3)+2)*1)
         should(track).be.equal(0);
     });
     it('should stop when you return true from some* callback', function () {
