@@ -54,9 +54,6 @@
         oldestValues: wrap(values, false),
         newestValues: wrap(values, true),
 
-        someNewest: wrap2(some, true),
-        someOldest: wrap2(some, false),
-
         delNewestWhile: wrap2(delWhile, true),
         delOldestWhile: wrap2(delWhile, false),
     };
