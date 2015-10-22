@@ -1,6 +1,6 @@
 # LruMap
 
-![Build Status](https://api.travis-ci.org/doug65536/lrumap.svg)
+![Build Status](https://travis-ci.org/doug65536/lrumap.svg?branch=master)
 
 ## Synopsis
 
