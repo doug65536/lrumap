@@ -157,8 +157,7 @@
         
         for (node = rev ? this._tail : this._head; node; node = next) {
             next = rev ? node.prev : node.next;
-            if (!node.deleted)
-                result.push(callback.call(thisArg, node.value, node.key, this));
+            result.push(callback.call(thisArg, node.value, node.key, this));
         }
         return result;
     }
@@ -168,8 +167,7 @@
         
         for (node = rev ? this._tail : this._head; node; node = next) {
             next = rev ? node.prev : node.next;
-            if (!node.deleted)
-                result.push(node.key);
+            result.push(node.key);
         }
         return result;
     }
@@ -179,8 +177,7 @@
         
         for (node = rev ? this._tail : this._head; node; node = next) {
             next = rev ? node.prev : node.next;
-            if (!node.deleted)
-                result.push(node.value);
+            result.push(node.value);
         }
         return result;
     }
@@ -190,8 +187,6 @@
         
         for (node = rev ? this._tail : this._head; node; node = next) {
             next = rev ? node.prev : node.next;
-            if (node.deleted)
-                continue;
             response = callback.call(thisArg, node.value, node.key, this);
             if (response === true)
                 return true;
@@ -209,8 +204,7 @@
         }
         for ( ; node; node = next) {
             next = rev ? node.prev : node.next;
-            if (!node.deleted)
-                initial = callback(initial, node.value, node.key, this);
+            initial = callback(initial, node.value, node.key, this);
         }
         return initial;
     }
@@ -221,8 +215,6 @@
             response;
         for (node = rev ? this._tail : this._head; node; node = next) {
             next = rev ? node.prev : node.next;
-            if (node.deleted)
-                continue;
             response = callback.call(thisArg, node.value, node.key, this);
             if (!response)
                 return response;
@@ -242,7 +234,6 @@
         this.value = value;
         this.next = null;
         this.prev = null;
-        this.deleted = true;
     }
     
     function append(map, node) {
@@ -255,7 +246,6 @@
             map._head = node;
             map._tail = node;
         }
-        node.deleted = false;
         ++map._count;
     }
     
@@ -270,8 +260,6 @@
         else
             map._tail = node.prev;
 
-        node.deleted = true; 
-        
         --map._count;
     }
 }(this));
