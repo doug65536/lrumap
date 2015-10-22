@@ -1,6 +1,6 @@
 # LruMap
 
-![Build Status](https://travis-ci.org/doug65536/lrumap.svg?branch=master)
+![Test Status](https://travis-ci.org/doug65536/lrumap.svg?branch=master)
 
 ## Synopsis
 
@@ -12,7 +12,7 @@ Never does a linear search, maintains a linked list of nodes
 for items, and uses an object for fast key lookup by property.
 
 The key must be a string. If it is not a string, it will
-be converted automatically with String(key) by all methods.
+be implicitly converted to a string.
 
 ## Installing
 
@@ -39,6 +39,10 @@ testmap.length = 0;
 ```
 
 ## API
+
+### new LruMap()
+
+Creates a new empty map.
 
 ### `length`
 
@@ -209,17 +213,55 @@ map during the iteration.
 
 **`map`** is the LruMap instance being iterated.
 
-### `someOldest(callback, thisArg)`
+### `mapOldest(callback, thisArg)`
 
 The callback is called once for each item, in order, 
 starting at the oldest (least recently used) item.
-
-The iteration will end and no more callbacks will
-occur if the callback returns `true`. All other values
-will be ignored and the iteration will continue.
+The return value from each callback is pushed into
+a new array, and that array is returned.
 
 This is consistent with the behavior of
 [`Array.prototype.some`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some).
+
+It is **not safe** to call any function that modifies the
+map during the iteration.
+
+**`callback`** defined as `function(value, key, map)`
+
+**`this`** is set to the value supplied in `thisArg`
+
+**`value`** is the value of the item.
+
+**`key`** is the key of the item.
+
+**`map`** is the LruMap instance being iterated.
+
+### `delOldestWhile(callback, thisArg)`
+
+The callback is called once for each item, in order, 
+starting at the oldest (least recently used) item.
+If the return value is truthy, then the item is deleted.
+If the return value is falsy, the iteration ends.
+
+It is **not safe** to call any function that modifies the
+map during the iteration.
+
+**`callback`** defined as `function(value, key, map)`
+
+**`this`** is set to the value supplied in `thisArg`
+
+**`value`** is the value of the item.
+
+**`key`** is the key of the item.
+
+**`map`** is the LruMap instance being iterated.
+
+### `delNewestWhile(callback, thisArg)`
+
+The callback is called once for each item, in order, 
+starting at the oldest (least recently used) item.
+If the return value is truthy, then the item is deleted.
+If the return value is falsy, the iteration ends.
 
 It is **not safe** to call any function that modifies the
 map during the iteration.

@@ -2,7 +2,7 @@
   "name": "lrumap",
   "version": "1.0.0",
   "description": "Implements an LRU key/value store which lets you iterate in order of age",
-  "main": "lrumap.js",
+  "main": "index.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha --reporter spec"
   },

@@ -11,6 +11,7 @@
     } else if (global.define) {
         global.define(LruMap);
     } else {
+        var globalBackup = global.LruMap;
         global.LruMap = LruMap;
     }
 
@@ -39,14 +40,14 @@
         oldestValue: oldestValue,
         newestValue: newestValue,
 
-        someOldest: wrap2(some, false),
-        someNewest: wrap2(some, true),
+        someOldest: wrap(some, false),
+        someNewest: wrap(some, true),
 
-        mapOldest: wrap2(map, false),
-        mapNewest: wrap2(map, true),
+        mapOldest: wrap(map, false),
+        mapNewest: wrap(map, true),
 
-        reduce: wrap2(reduce, false),
-        reduceRight: wrap2(reduce, true),
+        reduce: wrap(reduce, false),
+        reduceRight: wrap(reduce, true),
 
         oldestKeys: wrap(keys, false),
         newestKeys: wrap(keys, true),
@@ -54,8 +55,8 @@
         oldestValues: wrap(values, false),
         newestValues: wrap(values, true),
 
-        delNewestWhile: wrap2(delWhile, true),
-        delOldestWhile: wrap2(delWhile, false),
+        delNewestWhile: wrap(delWhile, true),
+        delOldestWhile: wrap(delWhile, false),
     };
     
     Object.defineProperty(LruMap.prototype, 'length', {
@@ -70,16 +71,15 @@
             return this._count;
         }
     });
-    
-    function wrap2(fn, firstArg) {
-        return function(a, b) {
-            return fn.call(this, firstArg, a, b);
-        };
-    }
-    
-    function wrap(fn, arg) {
-        return function() {
-            return fn.call(this, arg);
+
+    // Add a noConflict method to LruMap if using global
+    if (globalBackup) {
+        LruMap.noConflict = function() {
+            if (!globalBackup)
+                return undefined;
+            var ret = global.LruMap;
+            global.LruMap = globalBackup;
+            globalBackup = undefined;
         };
     }
     
@@ -126,6 +126,7 @@
         }
     }
     
+    // Returns true if the key existed
     function del(key) {
         var node = this._lookup[key];
         if (node !== undefined) {
@@ -198,7 +199,9 @@
         var node, next, response;
         
         node = rev ? this._tail : this._head;
-        if (arguments.length === 1) {
+        if (arguments.length === 2) {
+            if (!node)
+                throw TypeError('LruMap#reduce with empty array requires initial value');
             initial = node.value;
             node = node.next;
         }
@@ -228,6 +231,14 @@
     }
     
     // Internals --
+    
+    function wrap(fn, arg) {
+        return function() {
+            var args = Array.prototype.slice.call(arguments);
+            args.unshift(arg);
+            return fn.apply(this, args);
+        };
+    }
     
     function Node(key, value) {
         this.key = key;

@@ -6,7 +6,7 @@
 "use strict"
 
 var should = require('should'),
-    LruMap = require('../lrumap.js');
+    LruMap = require('..');
 
 describe('lrumap', function() {
     it('should construct with no arguments', function() {
@@ -44,6 +44,72 @@ describe('lrumap', function() {
         should(map.newestValue).be.instanceOf(Function);
         should(map.delOldestWhile).be.instanceOf(Function);
         should(map.delNewestWhile).be.instanceOf(Function);
+    });
+    it('should work correctly before setting a key', function() {
+        var map = new LruMap(),
+            flag;
+
+        should(map.length).be.equal(0);
+
+        should(map.newestKey()).be.equal(undefined);
+        should(map.oldestKey()).be.equal(undefined);
+
+        should(map.newestValue()).be.equal(undefined);
+        should(map.oldestValue()).be.equal(undefined);
+
+        should(map.oldestKeys()).be.Array;
+        should(map.oldestValues()).be.Array;
+        should(map.oldestKeys()).be.Array;
+        should(map.oldestValues()).be.Array;
+
+        should(map.oldestKeys().length).be.equal(0);
+        should(map.oldestValues().length).be.equal(0);
+        should(map.oldestKeys().length).be.equal(0);
+        should(map.oldestValues().length).be.equal(0);
+        
+        flag = false;
+        map.someOldest(function() {
+            flag = true;
+        });
+        should(flag).be.equal(false);
+        
+        flag = false;
+        map.someNewest(function() {
+            flag = true;
+        });
+        should(flag).be.equal(false);
+        
+        flag = false;
+        should(map.mapOldest(function() {
+            flag = true;
+        })).be.deepEqual([]);   
+        should(flag).be.equal(false);
+        
+        flag = false;
+        should(map.mapNewest(function() {
+            flag = true;
+        })).be.deepEqual([]);
+        should(flag).be.equal(false);
+        
+        should.throws(function() {
+            map.reduce(function() {
+                flag = true;
+                return true;
+            });
+        }, TypeError, "Empty reduce with no initial value should throw");
+        should(flag).be.equal(false);
+        
+        should(map.reduce(function() {
+            flag = true;
+            return true;
+        }, false)).be.equal(false);
+        should(flag).be.equal(false);
+        
+        flag = false;
+        should(map.reduceRight(function() {
+            flag = true;
+        }, false)).be.equal(false);
+        should(flag).be.equal(false);
     });
     it('should store and retrieve data', function() {
         var map = new LruMap();
@@ -210,6 +276,14 @@ describe('lrumap', function() {
         should(map.newestKey()).be.equal('4');
         should(map.newestValue()).be.equal('value_4');
     });
+    it('should completely clear the map if you set the length to zero', function() {
+        var map = new LruMap();
+
+        for (var i = 0; i < 5; ++i)
+            map.set(i, 'value_' + i);
+        
+        map.length = 0;
+    });
     it('should insert 10k items fast', function() {
         var map = new LruMap();
         for (var i = 0; i < 10000; ++i)
@@ -232,6 +306,39 @@ describe('lrumap', function() {
             for ( ; i > 0; --i)
                 map.del(i-1);
         }
+    });
+    it('should provide working "some" iterators', function() {
+        var map = new LruMap(),
+            thisArg = { passed: 42 },
+            firstKey;
+        
+        for (var i = 1; i <= 10; ++i)
+            map.set(i, 'value' + i);
+
+        should(map.someOldest(function(value, key, passedMap) {
+            should(key).be.instanceOf(String);
+            if (firstKey === undefined)
+                firstKey = key;
+            should(this).be.equal(thisArg);
+            should(this.passed).be.equal(42);
+            should(passedMap).be.equal(map);
+            should(+key).be.within(1, 10);
+            should(value).be.equal('value' + key);
+        }, thisArg)).be.equal(false);
+        should(firstKey).be.equal('1');
+
+        firstKey = undefined;
+        should(map.someNewest(function(value, key, passedMap) {
+            should(key).be.instanceOf(String);
+            if (firstKey === undefined)
+                firstKey = key;
+            should(this).be.equal(thisArg);
+            should(this.passed).be.equal(42);
+            should(passedMap).be.equal(map);
+            should(+key).be.within(1, 10);
+            should(value).be.equal('value' + key);
+        }, thisArg)).be.equal(false);
+        should(firstKey).be.equal('10')
     });
     it('should provide basic iteration facilities', function() {
         var map = new LruMap(),
@@ -256,17 +363,6 @@ describe('lrumap', function() {
             should(value).be.equal('value' + key);
         }, thisArg)).be.equal(false);
         should(oldestFirstKey).be.equal('1')
-        should(map.someNewest(function(value, key, passedMap) {
-            should(key).be.instanceOf(String);
-            if (newestFirstKey === undefined)
-                newestFirstKey = key;
-            should(this).be.equal(thisArg);
-            should(this.passed).be.equal(42);
-            should(passedMap).be.equal(map);
-            should(+key).be.within(1, 10);
-            should(value).be.equal('value' + key);
-        }, thisArg)).be.equal(false);
-        should(newestFirstKey).be.equal('10')
     });
     it('should do ordered iterations in the correct order', function() {
         var map = new LruMap(), rep, track;
