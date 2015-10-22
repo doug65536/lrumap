@@ -142,8 +142,12 @@ starting at the newest (most recently used) item.
 The iteration will end and no more callbacks will
 occur if the callback returns `true`. All other values
 will be ignored and the iteration will continue.
-This is consistent with the behavior of
+
+This method is consistent with the behavior of
 [`Array.prototype.some`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some).
+
+It is not safe to call any function that modifies the
+map during the iteration.
 
 **`callback`** defined as `function(value, key, map)`
 
@@ -163,8 +167,12 @@ starting at the oldest (least recently used) item.
 The iteration will end and no more callbacks will
 occur if the callback returns `true`. All other values
 will be ignored and the iteration will continue.
-This is consistent with the behavior of
+
+This method is consistent with the behavior of
 [`Array.prototype.some`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some).
+
+It is not safe to call any function that modifies the
+map during the iteration.
 
 **`callback`** defined as `function(value, key, map)`
 
@@ -176,13 +184,64 @@ This is consistent with the behavior of
 
 **`map`** is the LruMap instance being iterated.
 
+### `mapNewest(callback, thisArg)`
+
+Returns array of values returned by the provided callback.
+
+The callback is called once for each item, in order, 
+starting at the newest (most recently used) item.
+The return value from each callback is pushed into
+a new array, and that array is returned.
+
+This is consistent with the behavior of
+[`Array.prototype.map`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map).
+
+It is not safe to call any function that modifies the
+map during the iteration.
+
+**`callback`** defined as `function(value, key, map)`
+
+**`this`** is set to the value supplied in `thisArg`
+
+**`value`** is the value of the item.
+
+**`key`** is the key of the item.
+
+**`map`** is the LruMap instance being iterated.
+
+### `someOldest(callback, thisArg)`
+
+The callback is called once for each item, in order, 
+starting at the oldest (least recently used) item.
+
+The iteration will end and no more callbacks will
+occur if the callback returns `true`. All other values
+will be ignored and the iteration will continue.
+
+This is consistent with the behavior of
+[`Array.prototype.some`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some).
+
+It is not safe to call any function that modifies the
+map during the iteration.
+
+**`callback`** defined as `function(value, key, map)`
+
+**`this`** is set to the value supplied in `thisArg`
+
+**`value`** is the value of the item.
+
+**`key`** is the key of the item.
+
+**`map`** is the LruMap instance being iterated.
 
 ## Running unit tests
 
-If you clone or fork this repository, you can run the
-included unit tests by executing the following command:
+You can run the included unit tests by executing the following command:
 
-`npm test`
+```
+npm update
+npm test
+```
 
 If you want to auto-run tests on save,
 [TDD](https://en.wikipedia.org/wiki/Test-driven_development)
