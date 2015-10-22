@@ -146,7 +146,7 @@ will be ignored and the iteration will continue.
 This method is consistent with the behavior of
 [`Array.prototype.some`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some).
 
-It is not safe to call any function that modifies the
+It is **not safe** to call any function that modifies the
 map during the iteration.
 
 **`callback`** defined as `function(value, key, map)`
@@ -171,7 +171,7 @@ will be ignored and the iteration will continue.
 This method is consistent with the behavior of
 [`Array.prototype.some`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some).
 
-It is not safe to call any function that modifies the
+It is **not safe** to call any function that modifies the
 map during the iteration.
 
 **`callback`** defined as `function(value, key, map)`
@@ -186,7 +186,7 @@ map during the iteration.
 
 ### `mapNewest(callback, thisArg)`
 
-Returns array of values returned by the provided callback.
+Returns an array of values returned by the provided callback.
 
 The callback is called once for each item, in order, 
 starting at the newest (most recently used) item.
@@ -196,7 +196,7 @@ a new array, and that array is returned.
 This is consistent with the behavior of
 [`Array.prototype.map`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map).
 
-It is not safe to call any function that modifies the
+It is **not safe** to call any function that modifies the
 map during the iteration.
 
 **`callback`** defined as `function(value, key, map)`
@@ -221,7 +221,7 @@ will be ignored and the iteration will continue.
 This is consistent with the behavior of
 [`Array.prototype.some`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some).
 
-It is not safe to call any function that modifies the
+It is **not safe** to call any function that modifies the
 map during the iteration.
 
 **`callback`** defined as `function(value, key, map)`
