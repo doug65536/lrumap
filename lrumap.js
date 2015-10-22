@@ -24,24 +24,42 @@
         this._count = 0;
         this._options = options || {};
     }
-    LruMap.prototype.peek = peek;
-    LruMap.prototype.set = set;
-    LruMap.prototype.get = get;
-    LruMap.prototype.del = del;
-    LruMap.prototype.has = has;
-    LruMap.prototype.some = some;
-    LruMap.prototype.map = map;
-    LruMap.prototype.keys = keys;
-    LruMap.prototype.values = values;
-    LruMap.prototype.reduce = reduce;
-    LruMap.prototype.oldestKey = oldestKey;
-    LruMap.prototype.newestKey = newestKey;
-    LruMap.prototype.oldestValue = oldestValue;
-    LruMap.prototype.newestValue = newestValue;
-    LruMap.prototype.someOldest = someOldest;
-    LruMap.prototype.someNewest = someNewest;
-    LruMap.prototype.delOldestWhile = delOldestWhile;
-    LruMap.prototype.delNewestWhile = delNewestWhile;
+    LruMap.prototype = {
+        constructor: LruMap,
+        
+        peek: peek,
+        set: set,
+        get: get,
+        del: del,
+        has: has,
+
+        oldestKey: oldestKey,
+        newestKey: newestKey,
+
+        oldestValue: oldestValue,
+        newestValue: newestValue,
+
+        someOldest: wrap2(some, false),
+        someNewest: wrap2(some, true),
+
+        mapOldest: wrap2(map, false),
+        mapNewest: wrap2(map, true),
+
+        reduce: wrap2(reduce, false),
+        reduceRight: wrap2(reduce, true),
+
+        oldestKeys: wrap(keys, false),
+        newestKeys: wrap(keys, true),
+
+        oldestValues: wrap(values, false),
+        newestValues: wrap(values, true),
+
+        someNewest: wrap2(some, true),
+        someOldest: wrap2(some, false),
+
+        delNewestWhile: wrap2(delWhile, true),
+        delOldestWhile: wrap2(delWhile, false),
+    };
     
     Object.defineProperty(LruMap.prototype, 'length', {
         set: function(value) {
@@ -55,6 +73,18 @@
             return this._count;
         }
     });
+    
+    function wrap2(fn, firstArg) {
+        return function(a, b) {
+            return fn.call(this, firstArg, a, b);
+        };
+    }
+    
+    function wrap(fn, arg) {
+        return function() {
+            return fn.call(this, arg);
+        };
+    }
     
     function has(key) {
         return this._lookup[key] !== undefined;
@@ -93,7 +123,6 @@
     function get(key) {
         var node = this._lookup[key];
         if (node !== undefined) {
-            node = this._lookup[key];
             remove(this, node);
             append(this, node);
             return node.value;
@@ -103,7 +132,6 @@
     function del(key) {
         var node = this._lookup[key];
         if (node !== undefined) {
-            node = this._lookup[key];
             remove(this, node);
             delete this._lookup[key];
             return true;
@@ -127,41 +155,46 @@
         return (this._tail && this._tail.value) || undefined;
     }
     
-    function map(callback, thisArg) {
+    function map(rev, callback, thisArg) {
         var node, next, result = [];
         
-        for (node = this._tail; node; node = next) {
-            next = node.prev;
-            result.push(callback.call(thisArg, node.value, node.key, this));
+        for (node = rev ? this._tail : this._head; node; node = next) {
+            next = rev ? node.prev : node.next;
+            if (!node.deleted)
+                result.push(callback.call(thisArg, node.value, node.key, this));
         }
         return result;
     }
     
-    function keys() {
+    function keys(rev) {
         var node, next, result = [];
         
-        for (node = this._tail; node; node = next) {
-            next = node.prev;
-            result.push(node.key);
+        for (node = rev ? this._tail : this._head; node; node = next) {
+            next = rev ? node.prev : node.next;
+            if (!node.deleted)
+                result.push(node.key);
         }
         return result;
     }
     
-    function values() {
+    function values(rev) {
         var node, next, result = [];
         
-        for (node = this._head; node; node = next) {
-            next = node.next;
-            result.push(node.value);
+        for (node = rev ? this._tail : this._head; node; node = next) {
+            next = rev ? node.prev : node.next;
+            if (!node.deleted)
+                result.push(node.value);
         }
         return result;
     }
     
-    function some(callback, thisArg) {
+    function some(rev, callback, thisArg) {
         var node, next, response;
         
-        for (node = this._head; node; node = next) {
-            next = node.next;
+        for (node = rev ? this._tail : this._head; node; node = next) {
+            next = rev ? node.prev : node.next;
+            if (node.deleted)
+                continue;
             response = callback.call(thisArg, node.value, node.key, this);
             if (response === true)
                 return true;
@@ -169,66 +202,30 @@
         return false;
     }
     
-    function reduce(callback, initial) {
+    function reduce(rev, callback, initial) {
         var node, next, response;
         
-        node = this._head;
+        node = rev ? this._tail : this._head;
         if (arguments.length === 1) {
             initial = node.value;
             node = node.next;
         }
         for ( ; node; node = next) {
-            next = node.next;
-            initial = callback(initial, node.value, node.key, this);
+            next = rev ? node.prev : node.next;
+            if (!node.deleted)
+                initial = callback(initial, node.value, node.key, this);
         }
         return initial;
     }
     
-    // Call the callback with the oldest item first,
-    // followed by progressively newer items,
-    // until the callback returns true
-    // Returns last callback return value or false
-    function someOldest(callback, thisArg) {
+    function delWhile(rev, callback, thisArg) {
         var node, 
             next,
             response;
-        for (node = this._head; node; node = next) {
-            next = node.next;
-            response = callback.call(thisArg, node.value, node.key, this);
-            if (response === true)
-                return true;
-        }
-        return false;
-    }
-    
-    // Call the callback with the newest item first,
-    // followed by progressively older items,
-    // until the callback returns true
-    // Returns last callback return value or false
-    function someNewest(callback, thisArg) {
-        var node,
-            response;
-        for (node = this._tail; node; node = node.prev) {
-            response = callback.call(thisArg, node.value, node.key, this);
-            if (response === true)
-                return true;
-        }
-        return false;
-    }
-    
-    // Pass items to the callback, oldest first, until
-    // the callback returns falsy.
-    // The callback is consulted before removing each
-    // entry.
-    // Returns callback return value if the 
-    // callback interrupted iteration.
-    // Returns undefined if all items deleted
-    function delOldestWhile(callback, thisArg) {
-        var node, 
-            next,
-            response;
-        for (node = this._head; node; node = next) {
-            next = node.next;
+        for (node = rev ? this._tail : this._head; node; node = next) {
+            next = rev ? node.prev : node.next;
+            if (node.deleted)
+                continue;
             response = callback.call(thisArg, node.value, node.key, this);
             if (!response)
                 return response;
@@ -241,28 +238,6 @@
         }
     }
     
-    // Pass items to the callback, newest first, until
-    // the callback returns falsy.
-    // The callback is consulted before removing each
-    // entry.
-    // Returns callback return value if the 
-    // callback interrupted iteration.
-    // Returns undefined if all items deleted
-    function delNewestWhile(callback, thisArg) {
-        var node, 
-            next,
-            response;
-        for (node = this._tail; node; node = next) {
-            next = node.prev;
-            response = callback.call(thisArg, node.value, node.key, this);
-            if (!response)
-                return response;
-            
-            delete this._lookup[key];
-            remove(this, node);
-        }
-    }
-    
     // Internals --
     
     function Node(key, value) {
@@ -270,6 +245,7 @@
         this.value = value;
         this.next = null;
         this.prev = null;
+        this.deleted = true;
     }
     
     function append(map, node) {
@@ -282,6 +258,7 @@
             map._head = node;
             map._tail = node;
         }
+        node.deleted = false;
         ++map._count;
     }
     
@@ -295,9 +272,9 @@
             node.next.prev = node.prev;
         else
             map._tail = node.prev;
+
+        node.deleted = true; 
         
-        node.next = null;
-        node.prev = null;
         --map._count;
     }
 }(this));

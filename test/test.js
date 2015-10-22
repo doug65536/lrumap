@@ -5,7 +5,6 @@
 
 "use strict"
 
-
 var should = require('should'),
     LruMap = require('../lrumap.js');
 
@@ -87,7 +86,11 @@ describe('lrumap', function() {
         should(map.newestValue()).be.equal(2);
         should(map.oldestValue()).be.equal(1);
         
-        should(map.values()).be.deepEqual([1, 2]);
+        should(map.oldestValues()).be.deepEqual([1, 2]);
+        should(map.newestValues()).be.deepEqual([2, 1]);
+        
+        should(map.oldestKeys()).be.deepEqual(['a', 'b']);
+        should(map.newestKeys()).be.deepEqual(['b', 'a']);
     });
     it('should preserve value types', function () {
         var map = new LruMap(),
@@ -234,19 +237,36 @@ describe('lrumap', function() {
         var map = new LruMap(),
             rep,
             track, 
-            thisArg;
+            thisArg, 
+            oldestFirstKey, 
+            newestFirstKey;
         
         for (var i = 1; i <= 10; ++i)
             map.set(i, 'value' + i);
         
         thisArg = { passed: 42 };
-        should(map.some(function(value, key, passedMap) {
+        should(map.someOldest(function(value, key, passedMap) {
+            should(key).be.instanceOf(String);
+            if (oldestFirstKey === undefined)
+                oldestFirstKey = key;
             should(this).be.equal(thisArg);
             should(this.passed).be.equal(42);
             should(passedMap).be.equal(map);
             should(+key).be.within(1, 10);
             should(value).be.equal('value' + key);
         }, thisArg)).be.equal(false);
+        should(oldestFirstKey).be.equal('1')
+        should(map.someNewest(function(value, key, passedMap) {
+            should(key).be.instanceOf(String);
+            if (newestFirstKey === undefined)
+                newestFirstKey = key;
+            should(this).be.equal(thisArg);
+            should(this.passed).be.equal(42);
+            should(passedMap).be.equal(map);
+            should(+key).be.within(1, 10);
+            should(value).be.equal('value' + key);
+        }, thisArg)).be.equal(false);
+        should(newestFirstKey).be.equal('10')
     });
     it('should do ordered iterations in the correct order', function() {
         var map = new LruMap(), rep, track;
@@ -269,7 +289,7 @@ describe('lrumap', function() {
         for (var i = 0; i < 10; ++i)
             map.set(i, 'value' + i);
         track = false;
-        should(map.some(function(value, key, passedMap) {
+        should(map.someOldest(function(value, key, passedMap) {
             if (+key === 4) {
                 track = true;
                 return true;
@@ -306,5 +326,35 @@ describe('lrumap', function() {
         should(track).be.equal(true);
         should(checked).be.equal(6);
         should(skipped).be.equal(5);
+    });
+    it('should have working keys() and values()', function() {
+        var map = new LruMap(), keys, values, seenKeys = {};
+        for (var i = 0; i < 10; ++i)
+            map.set(i, 'value' + i);
+        keys = map.oldestKeys();
+        values = map.oldestValues();
+        keys.forEach(function(key, index) {
+            // Make sure we see every key once
+            should(seenKeys[key]).be.equal(undefined);
+            seenKeys[key] = true;
+            
+            // Ensure keys and values are in the same order
+            should('value' + key).be.equal(values[index]);
+        });
+        should(Object.keys(seenKeys).length).be.equal(i);
+        
+        seenKeys = {};
+        keys = map.newestKeys();
+        values = map.newestValues();
+	    keys.forEach(function(key, index) {
+            // Make sure we see every key once
+            should(seenKeys[key]).be.equal(undefined);
+            seenKeys[key] = true;
+            
+            // Ensure keys and values are in the same order
+            should('value' + key).be.equal(values[index]);
+        });
+        should(Object.keys(seenKeys).length).be.equal(i);
+
     });
 });
