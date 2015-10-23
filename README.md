@@ -1,8 +1,10 @@
 # LruMap
 
-> master: [![Test Status](https://travis-ci.org/doug65536/lrumap.svg?branch=master)](https://travis-ci.org/doug65536/lrumap?branch=master)
-
-> dev: [![Test Status](https://travis-ci.org/doug65536/lrumap.svg?branch=dev)](https://travis-ci.org/doug65536/lrumap?branch=dev)
++-------:|:---------------------------------------------------------------------------------------------------------------------------------|
+| Branch | Status                                                                                                                           |
+| master | [![Test Status](https://travis-ci.org/doug65536/lrumap.svg?branch=master)](https://travis-ci.org/doug65536/lrumap?branch=master) |
+| dev    | [![Test Status](https://travis-ci.org/doug65536/lrumap.svg?branch=dev)](https://travis-ci.org/doug65536/lrumap?branch=dev)       |
++-------:+:---------------------------------------------------------------------------------------------------------------------------------|
 
 ## Synopsis
 
