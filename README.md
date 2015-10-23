@@ -54,7 +54,7 @@ When set to a number less than the current length, the
 oldest keys are disposed, in oldest first order.
 
 ### `set(key, value)`
-<sub><sup>⚠ *This is not safe to call during an iteration*</sup></sub>
+⚠ *This is not safe to call during an iteration*
 
 Returns `false` if the key was created.
 Returns `true` if the key already existed.
@@ -66,7 +66,7 @@ Updates the LRU data to treat *key* as the most recently
 used key.
 
 ### `get(key)`
-<sub><sup>⚠ *This is not safe to call during an iteration*</sup></sub>
+⚠ *This is not safe to call during an iteration*
 
 Returns `undefined` if the key did not exist.
 Returns the stored value if the key existed.
@@ -83,7 +83,7 @@ Returns the stored value if the key existed.
 Does not update LRU data.
 
 ### `del(key)`
-<sub><sup>⚠ *This is not safe to call during an iteration*</sup></sub>
+⚠ *This is not safe to call during an iteration*
 
 Removes the key from the map.
 
@@ -262,7 +262,7 @@ functions that update the LRU data from the callback.*
 Does not update LRU data.
 
 ### `delOldestWhile(callback, thisArg)`
-<sub><sup>⚠ *This is not safe to call during an iteration*</sup></sub>
+⚠ *This is not safe to call during an iteration*
 
 The callback is called once for each item, in order, 
 starting at the oldest (least recently used) item.
@@ -285,7 +285,7 @@ functions that update the LRU data from the callback.*
 Does not update LRU data.
 
 ### `delNewestWhile(callback, thisArg)`
-<sub><sup>⚠ *This is not safe to call during an iteration*</sup></sub>
+⚠ *This is not safe to call during an iteration*
 
 The callback is called once for each item, in order, 
 starting at the oldest (least recently used) item.
