@@ -282,8 +282,8 @@ Does not update LRU data.
 
 ### `delNewestWhile(callback, thisArg)`
 
-**This is an iteration function, it is not safe to call
-functions that update the LRU data**
+*This is an iteration function, it is not safe to call
+functions that update the LRU data from the callback.*
 
 The callback is called once for each item, in order, 
 starting at the oldest (least recently used) item.
