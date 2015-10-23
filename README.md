@@ -42,15 +42,6 @@ testmap.length = 0;
 
 ## API
 
-<style>
-.lru-caution:before {
-    content: "⚠";
-    background-color: #F7D417;
-    color: black;
-    font-size: 1.2em;
-}
-</style>
-
 ### `new LruMap()`
 
 Returns a new empty map.
@@ -62,7 +53,7 @@ When read, this returns the number of keys in the map
 When set to a number less than the current length, the
 oldest keys are disposed, in oldest first order.
 
-### `set(key, value)` <span class="lru-caution"></span>
+### `set(key, value)` <span style="background-color: #F7D417; color: black; font-size: 1.2em;">⚠</span>
 
 Returns `false` if the key was created.
 Returns `true` if the key already existed.
