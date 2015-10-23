@@ -14,6 +14,8 @@ for items, and uses an object for fast key lookup by property.
 The key must be a string. If it is not a string, it will
 be implicitly converted to a string.
 
+No dependencies, only dev dependencies for included unit tests.
+
 ## Installing
 
 `npm install ???`  *not published yet*
@@ -101,12 +103,16 @@ Returns `undefined` if the map is empty.
 Returns the key of most recently used 
 entry if the map is not empty.
 
+Does not update LRU data.
+
 ### `oldestKey()`
 
 Returns `undefined` if the map is empty.
 
 Returns the key of least recently used 
 entry if the map is not empty.
+
+Does not update LRU data.
 
 ### `newestValue()`
 
@@ -115,12 +121,16 @@ Returns `undefined` if the map is empty.
 Returns the value of most recently used 
 entry if the map is not empty.
 
+Does not update LRU data.
+
 ### `oldestValue()`
 
 Returns `undefined` if the map is empty.
 
 Returns the value of least recently used 
 entry if the map is not empty.
+
+Does not update LRU data.
 
 ### `keys()`
 
@@ -130,6 +140,8 @@ It is guaranteed to be in the same order as the
 values returned by [`values()`](#values), only if the
 map has not been changed between the calls.
 
+Does not update LRU data.
+
 ### `values()`
 
 Returns an array of all values in the map.
@@ -137,6 +149,8 @@ Returns an array of all values in the map.
 It is guaranteed to be in the same order as the
 values returned by [`keys()`](#keys), only if the
 map has not been changed between the calls.
+
+Does not update LRU data.
 
 ### `someNewest(callback, thisArg)`
 
@@ -163,6 +177,8 @@ map during the iteration.
 
 **`map`** is the LruMap instance being iterated.
 
+Does not update LRU data.
+
 ### `someOldest(callback, thisArg)`
 
 The callback is called once for each item, in order, 
@@ -187,6 +203,8 @@ map during the iteration.
 **`key`** is the key of the item.
 
 **`map`** is the LruMap instance being iterated.
+
+Does not update LRU data.
 
 ### `mapNewest(callback, thisArg)`
 
@@ -213,6 +231,8 @@ map during the iteration.
 
 **`map`** is the LruMap instance being iterated.
 
+Does not update LRU data.
+
 ### `mapOldest(callback, thisArg)`
 
 The callback is called once for each item, in order, 
@@ -236,6 +256,8 @@ map during the iteration.
 
 **`map`** is the LruMap instance being iterated.
 
+Does not update LRU data.
+
 ### `delOldestWhile(callback, thisArg)`
 
 The callback is called once for each item, in order, 
@@ -256,6 +278,8 @@ map during the iteration.
 
 **`map`** is the LruMap instance being iterated.
 
+Does not update LRU data.
+
 ### `delNewestWhile(callback, thisArg)`
 
 The callback is called once for each item, in order, 
@@ -275,6 +299,8 @@ map during the iteration.
 **`key`** is the key of the item.
 
 **`map`** is the LruMap instance being iterated.
+
+Does not update LRU data.
 
 ## Running unit tests
 
