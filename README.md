@@ -53,7 +53,7 @@ When read, this returns the number of keys in the map
 When set to a number less than the current length, the
 oldest keys are disposed, in oldest first order.
 
-### `set(key, value)` <sub><sup><sub><sup>⚠ *This is not safe to call during an iteration*</sup></sub></sup></sub>
+### `set(key, value)` <sub><sup>⚠ *This is not safe to call during an iteration*</sup></sub>
 
 Returns `false` if the key was created.
 Returns `true` if the key already existed.
@@ -64,7 +64,7 @@ key and value.
 Updates the LRU data to treat *key* as the most recently
 used key.
 
-### `get(key)`
+### `get(key)` <sub><sup>⚠ *This is not safe to call during an iteration*</sup></sub>
 
 Returns `undefined` if the key did not exist.
 Returns the stored value if the key existed.
@@ -80,7 +80,7 @@ Returns the stored value if the key existed.
 
 Does not update LRU data.
 
-### `del(key)`
+### `del(key)` <sub><sup>⚠ *This is not safe to call during an iteration*</sup></sub>
 
 Removes the key from the map.
 
