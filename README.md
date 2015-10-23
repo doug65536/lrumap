@@ -164,9 +164,6 @@ will be ignored and the iteration will continue.
 This method is consistent with the behavior of
 [`Array.prototype.some`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some).
 
-It is **not safe** to call any function that updates the
-LRU data during the iteration.
-
 **`callback`** defined as `function(value, key, map)`
 
 **`this`** is set to the value supplied in `thisArg`
@@ -176,6 +173,9 @@ LRU data during the iteration.
 **`key`** is the key of the item.
 
 **`map`** is the LruMap instance being iterated.
+
+*This is an iteration function, it is not safe to call
+functions that update the LRU data from the callback.*
 
 Does not update LRU data.
 
@@ -191,9 +191,6 @@ will be ignored and the iteration will continue.
 This method is consistent with the behavior of
 [`Array.prototype.some`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some).
 
-It is **not safe** to call any function that modifies the
-map during the iteration.
-
 **`callback`** defined as `function(value, key, map)`
 
 **`this`** is set to the value supplied in `thisArg`
@@ -203,6 +200,9 @@ map during the iteration.
 **`key`** is the key of the item.
 
 **`map`** is the LruMap instance being iterated.
+
+*This is an iteration function, it is not safe to call
+functions that update the LRU data from the callback.*
 
 Does not update LRU data.
 
@@ -218,9 +218,6 @@ a new array, and that array is returned.
 This is consistent with the behavior of
 [`Array.prototype.map`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map).
 
-It is **not safe** to call any function that modifies the
-map during the iteration.
-
 **`callback`** defined as `function(value, key, map)`
 
 **`this`** is set to the value supplied in `thisArg`
@@ -230,6 +227,9 @@ map during the iteration.
 **`key`** is the key of the item.
 
 **`map`** is the LruMap instance being iterated.
+
+*This is an iteration function, it is not safe to call
+functions that update the LRU data from the callback.*
 
 Does not update LRU data.
 
@@ -243,9 +243,6 @@ a new array, and that array is returned.
 This is consistent with the behavior of
 [`Array.prototype.some`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some).
 
-It is **not safe** to call any function that modifies the
-map during the iteration.
-
 **`callback`** defined as `function(value, key, map)`
 
 **`this`** is set to the value supplied in `thisArg`
@@ -255,6 +252,9 @@ map during the iteration.
 **`key`** is the key of the item.
 
 **`map`** is the LruMap instance being iterated.
+
+*This is an iteration function, it is not safe to call
+functions that update the LRU data from the callback.*
 
 Does not update LRU data.
 
@@ -265,9 +265,6 @@ starting at the oldest (least recently used) item.
 If the return value is truthy, then the item is deleted.
 If the return value is falsy, the iteration ends.
 
-It is **not safe** to call any function that modifies the
-map during the iteration.
-
 **`callback`** defined as `function(value, key, map)`
 
 **`this`** is set to the value supplied in `thisArg`
@@ -278,21 +275,18 @@ map during the iteration.
 
 **`map`** is the LruMap instance being iterated.
 
+*This is an iteration function, it is not safe to call
+functions that update the LRU data from the callback.*
+
 Does not update LRU data.
 
 ### `delNewestWhile(callback, thisArg)`
-
-*This is an iteration function, it is not safe to call
-functions that update the LRU data from the callback.*
 
 The callback is called once for each item, in order, 
 starting at the oldest (least recently used) item.
 If the return value is truthy, then the item is deleted.
 If the return value is falsy, the iteration ends.
 
-It is **not safe** to call any function that modifies the
-map during the iteration.
-
 **`callback`** defined as `function(value, key, map)`
 
 **`this`** is set to the value supplied in `thisArg`
@@ -302,6 +296,9 @@ map during the iteration.
 **`key`** is the key of the item.
 
 **`map`** is the LruMap instance being iterated.
+
+*This is an iteration function, it is not safe to call
+functions that update the LRU data from the callback.*
 
 Does not update LRU data.
 
