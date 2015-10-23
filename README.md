@@ -258,7 +258,7 @@ functions that update the LRU data from the callback.*
 
 Does not update LRU data.
 
-### `delOldestWhile(callback, thisArg)`
+### `delOldestWhile(callback, thisArg)` <sub><sup>⚠ *This is not safe to call during an iteration*</sup></sub>
 
 The callback is called once for each item, in order, 
 starting at the oldest (least recently used) item.
@@ -280,7 +280,7 @@ functions that update the LRU data from the callback.*
 
 Does not update LRU data.
 
-### `delNewestWhile(callback, thisArg)`
+### `delNewestWhile(callback, thisArg)` <sub><sup>⚠ *This is not safe to call during an iteration*</sup></sub>
 
 The callback is called once for each item, in order, 
 starting at the oldest (least recently used) item.
