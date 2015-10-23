@@ -73,13 +73,16 @@
     });
 
     // Add a noConflict method to LruMap if using global
+    var noConflictBackup;
     if (globalBackup) {
+        noConflictBackup = LruMap.noConflict;
         LruMap.noConflict = function() {
             if (!globalBackup)
                 return undefined;
             var ret = global.LruMap;
             global.LruMap = globalBackup;
             globalBackup = undefined;
+            LruMap.noConflict = noConflictBackup;
         };
     }
     

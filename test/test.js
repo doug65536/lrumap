@@ -8,7 +8,7 @@
 var should = require('should'),
     LruMap = require('..');
 
-describe('lrumap', function() {
+describe('LruMap', function() {
     it('should construct with no arguments', function() {
         var map = new LruMap();
         should(map).be.instanceOf(LruMap);
@@ -32,30 +32,29 @@ describe('lrumap', function() {
     it('should have the documented interface', function() {
         var map = new LruMap();
         should(map.length).be.equal(0);
-        should(map.set).be.instanceOf(Function);
-        should(map.get).be.instanceOf(Function);
-        should(map.del).be.instanceOf(Function);
-        should(map.has).be.instanceOf(Function);
-        should(map.newestKey).be.instanceOf(Function);
-        should(map.oldestKey).be.instanceOf(Function);
-        should(map.someNewest).be.instanceOf(Function);
-        should(map.someOldest).be.instanceOf(Function);
-        should(map.oldestValue).be.instanceOf(Function);
-        should(map.newestValue).be.instanceOf(Function);
-        should(map.delOldestWhile).be.instanceOf(Function);
-        should(map.delNewestWhile).be.instanceOf(Function);
+        should(map.set).be.Function;
+        should(map.get).be.Function;
+        should(map.del).be.Function;
+        should(map.has).be.Function;
+        should(map.newestKey).be.Function;
+        should(map.oldestKey).be.Function;
+        should(map.someNewest).be.Function;
+        should(map.someOldest).be.Function;
+        should(map.oldestValue).be.Function;
+        should(map.newestValue).be.Function;
+        should(map.delOldestWhile).be.Function;
+        should(map.delNewestWhile).be.Function;
     });
-    it('should work correctly before setting a key', function() {
-        var map = new LruMap(),
-            flag;
-
+    function isEmpty(map) {
+        var flag;
+        
         should(map.length).be.equal(0);
 
-        should(map.newestKey()).be.equal(undefined);
-        should(map.oldestKey()).be.equal(undefined);
+        should(map.newestKey()).be.undefined;
+        should(map.oldestKey()).be.undefined;
 
-        should(map.newestValue()).be.equal(undefined);
-        should(map.oldestValue()).be.equal(undefined);
+        should(map.newestValue()).be.undefined;
+        should(map.oldestValue()).be.undefined;
 
         should(map.oldestKeys()).be.Array;
         should(map.oldestValues()).be.Array;
@@ -71,25 +70,25 @@ describe('lrumap', function() {
         map.someOldest(function() {
             flag = true;
         });
-        should(flag).be.equal(false);
+        should(flag).be.false;
         
         flag = false;
         map.someNewest(function() {
             flag = true;
         });
-        should(flag).be.equal(false);
+        should(flag).be.false;
         
         flag = false;
         should(map.mapOldest(function() {
             flag = true;
         })).be.deepEqual([]);   
-        should(flag).be.equal(false);
+        should(flag).be.false;
         
         flag = false;
         should(map.mapNewest(function() {
             flag = true;
         })).be.deepEqual([]);
-        should(flag).be.equal(false);
+        should(flag).be.false;
         
         should.throws(function() {
             map.reduce(function() {
@@ -97,54 +96,59 @@ describe('lrumap', function() {
                 return true;
             });
         }, TypeError, "Empty reduce with no initial value should throw");
-        should(flag).be.equal(false);
+        should(flag).be.false;
         
         should(map.reduce(function() {
             flag = true;
             return true;
-        }, false)).be.equal(false);
-        should(flag).be.equal(false);
+        }, false)).be.false;
+        should(flag).be.false;
         
         flag = false;
         should(map.reduceRight(function() {
             flag = true;
-        }, false)).be.equal(false);
-        should(flag).be.equal(false);
+        }, false)).be.false;
+        should(flag).be.false;
+    }
+    it('should work correctly before setting a key', function() {
+        var map = new LruMap();
+        
+        isEmpty(map);
     });
     it('should store and retrieve data', function() {
         var map = new LruMap();
         should(map.length).be.equal(0);
-        should(map.has('a')).be.equal(false);
-        should(map.get('a')).be.equal(undefined);
-        should(map.newestKey()).be.equal(undefined);
-        should(map.oldestKey()).be.equal(undefined);
-        should(map.newestValue()).be.equal(undefined);
-        should(map.oldestValue()).be.equal(undefined);
+        should(map.has('a')).be.false;
+        should(map.get('a')).be.undefined;
+        should(map.newestKey()).be.undefined;
+        should(map.oldestKey()).be.undefined;
+        should(map.newestValue()).be.undefined;
+        should(map.oldestValue()).be.undefined;
 
-        should(map.set('a', 1)).be.equal(false);
+        should(map.set('a', 1)).be.false;
 
         should(map.length).be.equal(1);
-        should(map.has('a')).be.equal(true);
+        should(map.has('a')).be.true;
         should(map.get('a')).be.equal(1);
         should(map.newestKey()).be.equal('a');
         should(map.oldestKey()).be.equal('a');
         should(map.newestValue()).be.equal(1);
         should(map.oldestValue()).be.equal(1);
    
-        should(map.set('a', 1)).be.equal(true);
+        should(map.set('a', 1)).be.true;
 
         should(map.length).be.equal(1);
-        should(map.has('a')).be.equal(true);
+        should(map.has('a')).be.true;
         should(map.get('a')).be.equal(1);
         should(map.newestKey()).be.equal('a');
         should(map.oldestKey()).be.equal('a');
         should(map.newestValue()).be.equal(1);
         should(map.oldestValue()).be.equal(1);
         
-        should(map.set('b', 2)).be.equal(false);
+        should(map.set('b', 2)).be.false;
 
         should(map.length).be.equal(2);
-        should(map.has('a')).be.equal(true);
+        should(map.has('a')).be.true;
         should(map.get('a')).be.equal(1);
         should(map.get('b')).be.equal(2);
         should(map.newestKey()).be.equal('b');
@@ -157,6 +161,44 @@ describe('lrumap', function() {
         
         should(map.oldestKeys()).be.deepEqual(['a', 'b']);
         should(map.newestKeys()).be.deepEqual(['b', 'a']);
+    });
+    it('should handle deleting first, middle, last', function() {
+        var map = new LruMap();
+
+        var populate = function(map) {
+            map.length = 0;
+            for (var i = 1; i <= 5; ++i)
+                map.set(i, 'value_' + i);
+        };
+        var count = function(map) {
+            return map.reduce(function(total) {
+                return total + 1;
+            }, 0);
+        };
+        
+        populate(map);
+        should(map.del('1')).be.true;
+        should(map.oldestKey()).be.equal('2');
+        should(map.oldestValue()).be.equal('value_2');
+        should(map.newestKey()).be.equal('5');
+        should(map.newestValue()).be.equal('value_5');
+        should(count(map)).be.equal(4);
+
+        populate(map);
+        should(map.del('3')).be.true;
+        should(map.oldestKey()).be.equal('1');
+        should(map.oldestValue()).be.equal('value_1');
+        should(map.newestKey()).be.equal('5');
+        should(map.newestValue()).be.equal('value_5');
+        should(count(map)).be.equal(4);
+
+        populate(map);
+        should(map.del('5')).be.true;
+        should(map.oldestKey()).be.equal('1');
+        should(map.oldestValue()).be.equal('value_1');
+        should(map.newestKey()).be.equal('4');
+        should(map.newestValue()).be.equal('value_4');
+        should(count(map)).be.equal(4);
     });
     it('should preserve value types', function () {
         var map = new LruMap(),
@@ -185,33 +227,33 @@ describe('lrumap', function() {
         should(map.get('date')).be.equal(date);
         should(map.get('date')).be.equal(date);
         should(map.get('number')).be.equal(num);
-        should(map.get('true')).be.equal(true);
-        should(map.get('false')).be.equal(false);
+        should(map.get('true')).be.true;
+        should(map.get('false')).be.false;
         should(map.get('null')).be.equal(null);
         should(map.get('NaN')).be.NaN;
         should(map.get('array')).be.equal(arr);
-        should(map.get('undefined')).be.equal(undefined);
+        should(map.get('undefined')).be.undefined;
     });
     it('should not initially have any keys from Object', function () {
         var map = new LruMap(),
             key;
         Object.getOwnPropertyNames(Object.getPrototypeOf({}))
         .forEach(function(key) {
-            should(map.has(key)).be.equal(false);
-            should(map.get(key)).be.equal(undefined);
+            should(map.has(key)).be.false;
+            should(map.get(key)).be.undefined;
         });
     });
     it('should remove keys properly', function () {
         var map = new LruMap();
-        should(map.has('1')).be.equal(false);
+        should(map.has('1')).be.false;
         should(map.length).be.equal(0);
-        should(map.set('1', 'a')).be.equal(false);
+        should(map.set('1', 'a')).be.false;
         should(map.length).be.equal(1);
-        should(map.has('1')).be.equal(true);
-        should(map.del('1')).be.equal(true);
-        should(map.oldestValue()).be.equal(undefined);
-        should(map.has('1')).be.equal(false);
-        should(map.del('1')).be.equal(false);
+        should(map.has('1')).be.true;
+        should(map.del('1')).be.true;
+        should(map.oldestValue()).be.undefined;
+        should(map.has('1')).be.false;
+        should(map.del('1')).be.false;
         should(map.length).be.equal(0);
     });
     it('should update lru order when getting', function () {
@@ -264,11 +306,11 @@ describe('lrumap', function() {
         map.length = 3;
         should(map.length).be.equal(3);
         
-        should(map.has('0')).be.equal(false);
-        should(map.has('1')).be.equal(false);
-        should(map.has('2')).be.equal(true);
-        should(map.has('3')).be.equal(true);
-        should(map.has('4')).be.equal(true);
+        should(map.has('0')).be.false;
+        should(map.has('1')).be.false;
+        should(map.has('2')).be.true;
+        should(map.has('3')).be.true;
+        should(map.has('4')).be.true;
 
         should(map.oldestKey()).be.equal('2');
         should(map.oldestValue()).be.equal('value_2');
@@ -283,6 +325,8 @@ describe('lrumap', function() {
             map.set(i, 'value_' + i);
         
         map.length = 0;
+        
+        isEmpty(map);
     });
     it('should insert 10k items fast', function() {
         var map = new LruMap();
@@ -324,7 +368,7 @@ describe('lrumap', function() {
             should(passedMap).be.equal(map);
             should(+key).be.within(1, 10);
             should(value).be.equal('value' + key);
-        }, thisArg)).be.equal(false);
+        }, thisArg)).be.false;
         should(firstKey).be.equal('1');
 
         firstKey = undefined;
@@ -337,7 +381,7 @@ describe('lrumap', function() {
             should(passedMap).be.equal(map);
             should(+key).be.within(1, 10);
             should(value).be.equal('value' + key);
-        }, thisArg)).be.equal(false);
+        }, thisArg)).be.false;
         should(firstKey).be.equal('10')
     });
     it('should provide working "map" iterators', function() {
@@ -396,12 +440,12 @@ describe('lrumap', function() {
         should(map.someOldest(function(value, key, passedMap) {
             should(value).be.equal('value' + track);
             should(key).be.equal((track++).toString());
-        })).be.equal(false);
+        })).be.false;
         should(track).be.equal(10);
         should(map.someNewest(function(value, key, passedMap) {
             should(key).be.equal((--track).toString());
             should(value).be.equal('value' + track);
-        })).be.equal(false);
+        })).be.false;
         should(track).be.equal(0);
 
         track = 0;
@@ -448,8 +492,8 @@ describe('lrumap', function() {
                 track = true;
                 return true;
             }
-        })).be.equal(true);
-        should(track).be.equal(true);
+        })).be.true;
+        should(track).be.true;
         
         track = false;
         skipped = 0;
@@ -461,8 +505,8 @@ describe('lrumap', function() {
                 return true;
             }
             ++skipped;
-        })).be.equal(true);
-        should(track).be.equal(true);
+        })).be.true;
+        should(track).be.true;
         should(checked).be.equal(5);
         should(skipped).be.equal(4);
         
@@ -476,8 +520,8 @@ describe('lrumap', function() {
                 return true;
             }
             ++skipped;
-        })).be.equal(true);
-        should(track).be.equal(true);
+        })).be.true;
+        should(track).be.true;
         should(checked).be.equal(6);
         should(skipped).be.equal(5);
     });
@@ -489,7 +533,7 @@ describe('lrumap', function() {
         values = map.oldestValues();
         keys.forEach(function(key, index) {
             // Make sure we see every key once
-            should(seenKeys[key]).be.equal(undefined);
+            should(seenKeys[key]).be.undefined;
             seenKeys[key] = true;
             
             // Ensure keys and values are in the same order
@@ -502,7 +546,7 @@ describe('lrumap', function() {
         values = map.newestValues();
 	    keys.forEach(function(key, index) {
             // Make sure we see every key once
-            should(seenKeys[key]).be.equal(undefined);
+            should(seenKeys[key]).be.undefined;
             seenKeys[key] = true;
             
             // Ensure keys and values are in the same order
@@ -511,4 +555,25 @@ describe('lrumap', function() {
         should(Object.keys(seenKeys).length).be.equal(i);
 
     });
+    it('should create independent unrelated maps', function() {
+        var map1 = new LruMap();
+        var map2 = new LruMap()
+        
+        map1.set('a', '1');
+        should(map1).be.length(1);
+        should(map2).be.length(0);
+        should(map2.get('a')).be.undefined;
+        
+        map2.set('b', '3');
+        should(map1).be.length(1);
+        should(map2).be.length(1);
+        
+        map1.set('b', '5');
+        should(map1).be.length(2);
+        should(map2).be.length(1);
+        
+        map2.set('a', '5');
+        should(map1).be.length(2);
+        should(map2).be.length(2);
+    }); 
 });

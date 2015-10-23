@@ -8,7 +8,7 @@
 ## Synopsis
 
 A fast key/value pair storage container with O(1) access to
-newest and oldest nodes, and O(n) iteration in forward or 
+newest and oldest nodes, and O(1) iteration in forward or 
 reverse order (LRU or MRU first).
 
 Never does a linear search, maintains a linked list of nodes
@@ -51,10 +51,12 @@ Returns a new empty map.
 
 ### `length`
 
-When read, this returns the number of keys in the map
+When read, this returns the number of keys in the map.
 
 When set to a number less than the current length, the
 oldest keys are disposed, in oldest first order.
+
+Attempts to increase the length are ignored.
 
 ### `set(key, value)`
 ⚠ *This is not safe to call during an iteration*
@@ -69,7 +71,7 @@ Updates the LRU data to treat *key* as the most recently
 used key.
 
 ### `get(key)`
-⚠ *This is not safe to call during an iteration*
+⚠ *This is not safe to call during an iteration.*
 
 Returns `undefined` if the key did not exist.
 Returns the stored value if the key existed.
@@ -167,12 +169,17 @@ The iteration will end and no more callbacks will
 occur if the callback returns `true`. All other values
 will be ignored and the iteration will continue.
 
+Returns `true` if the callback returned `true`.
+
+Returns `false` if the callback never returned `true`.
+In this case the entire map has been iterated.
+
 This method is consistent with the behavior of
 [`Array.prototype.some`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some).
 
 **`callback`** defined as `function(value, key, map)`
 
-**`this`** is set to the value supplied in `thisArg`
+**`this`** is set to the value supplied in `thisArg`.
 
 **`value`** is the value of the item.
 
@@ -194,12 +201,17 @@ The iteration will end and no more callbacks will
 occur if the callback returns `true`. All other values
 will be ignored and the iteration will continue.
 
+Returns `true` if the callback returned `true`.
+
+Returns `false` if the callback never returned `true`.
+In this case the entire map has been iterated.
+
 This method is consistent with the behavior of
 [`Array.prototype.some`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some).
 
-**`callback`** defined as `function(value, key, map)`
+**`callback`** defined as `function(value, key, map)`.
 
-**`this`** is set to the value supplied in `thisArg`
+**`this`** is set to the value supplied in `thisArg`.
 
 **`value`** is the value of the item.
 
@@ -224,9 +236,9 @@ a new array, and that array is returned.
 This is consistent with the behavior of
 [`Array.prototype.map`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map).
 
-**`callback`** defined as `function(value, key, map)`
+**`callback`** defined as `function(value, key, map)`.
 
-**`this`** is set to the value supplied in `thisArg`
+**`this`** is set to the value supplied in `thisArg`.
 
 **`value`** is the value of the item.
 
@@ -249,9 +261,9 @@ a new array, and that array is returned.
 This is consistent with the behavior of
 [`Array.prototype.map`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map).
 
-**`callback`** defined as `function(value, key, map)`
+**`callback`** defined as `function(value, key, map)`.
 
-**`this`** is set to the value supplied in `thisArg`
+**`this`** is set to the value supplied in `thisArg`.
 
 **`value`** is the value of the item.
 
@@ -265,7 +277,7 @@ functions that update the LRU data from the callback.*
 Does not update LRU data.
 
 ### `delOldestWhile(callback, thisArg)`
-⚠ *This is not safe to call during an iteration*
+⚠ *This is not safe to call during an iteration.*
 
 The callback is called once for each item, in order, 
 starting at the oldest (least recently used) item.
