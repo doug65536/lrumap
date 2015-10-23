@@ -1,6 +1,6 @@
 # LruMap
 
-![Test Status](https://travis-ci.org/doug65536/lrumap.svg?branch=master)
+[![Test Status](https://travis-ci.org/doug65536/lrumap.svg?branch=master)](https://travis-ci.org/doug65536/lrumap)
 
 ## Synopsis
 
