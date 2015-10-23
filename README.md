@@ -53,7 +53,7 @@ When read, this returns the number of keys in the map
 When set to a number less than the current length, the
 oldest keys are disposed, in oldest first order.
 
-### `set(key, value)` <div title="This is not safe to call during an iteration" style="float: left; background-color: #F7D417; color: black; font-size: 1.2em;">⚠</span>
+### `set(key, value)` <div title="This is not safe to call during an iteration" style="display: inline-block; background-color: #F7D417; color: black; font-size: 1.2em;">⚠</span>
 
 Returns `false` if the key was created.
 Returns `true` if the key already existed.
