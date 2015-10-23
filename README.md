@@ -44,7 +44,7 @@ testmap.length = 0;
 
 ### `new LruMap()`
 
-Creates a new empty map.
+Returns a new empty map.
 
 ### `length`
 
@@ -54,6 +54,7 @@ When set to a number less than the current length, the
 oldest keys are disposed, in oldest first order.
 
 ### `set(key, value)`
+<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18"><path d="M.5 16h17L9 1 .5 16zm9.5-2H8v-2h2v2zm0-3H8V7h2v4z"/></svg>
 
 Returns `false` if the key was created.
 Returns `true` if the key already existed.
@@ -164,8 +165,8 @@ will be ignored and the iteration will continue.
 This method is consistent with the behavior of
 [`Array.prototype.some`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some).
 
-It is **not safe** to call any function that modifies the
-map during the iteration.
+It is **not safe** to call any function that updates the
+LRU data during the iteration.
 
 **`callback`** defined as `function(value, key, map)`
 
