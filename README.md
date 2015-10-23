@@ -241,7 +241,7 @@ The return value from each callback is pushed into
 a new array, and that array is returned.
 
 This is consistent with the behavior of
-[`Array.prototype.some`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some).
+[`Array.prototype.map`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map).
 
 **`callback`** defined as `function(value, key, map)`
 
