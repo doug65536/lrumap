@@ -53,7 +53,7 @@ When read, this returns the number of keys in the map
 When set to a number less than the current length, the
 oldest keys are disposed, in oldest first order.
 
-### `set(key, value)` ⚠ *This is not safe to call during an iteration*
+### `set(key, value)` <sub><sup>⚠ *This is not safe to call during an iteration*</sup></sub>
 
 Returns `false` if the key was created.
 Returns `true` if the key already existed.
