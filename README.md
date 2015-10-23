@@ -167,6 +167,11 @@ The iteration will end and no more callbacks will
 occur if the callback returns `true`. All other values
 will be ignored and the iteration will continue.
 
+This function will return true if the callback returned true.
+
+This function will return false if the callback never returned
+true. In this case the entire map has been iterated.
+
 This method is consistent with the behavior of
 [`Array.prototype.some`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some).
 
@@ -193,6 +198,11 @@ starting at the oldest (least recently used) item.
 The iteration will end and no more callbacks will
 occur if the callback returns `true`. All other values
 will be ignored and the iteration will continue.
+
+This function will return true if the callback returned true.
+
+This function will return false if the callback never returned
+true. In this case the entire map has been iterated.
 
 This method is consistent with the behavior of
 [`Array.prototype.some`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some).
