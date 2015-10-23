@@ -167,9 +167,9 @@ The iteration will end and no more callbacks will
 occur if the callback returns `true`. All other values
 will be ignored and the iteration will continue.
 
-Returns true if the callback returned true.
+Returns `true` if the callback returned `true`.
 
-Returns false if the callback never returned true.
+Returns `false` if the callback never returned `true`.
 In this case the entire map has been iterated.
 
 This method is consistent with the behavior of
@@ -199,9 +199,9 @@ The iteration will end and no more callbacks will
 occur if the callback returns `true`. All other values
 will be ignored and the iteration will continue.
 
-Returns true if the callback returned true.
+Returns `true` if the callback returned `true`.
 
-Returns false if the callback never returned true.
+Returns `false` if the callback never returned `true`.
 In this case the entire map has been iterated.
 
 This method is consistent with the behavior of
