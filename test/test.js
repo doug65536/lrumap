@@ -8,7 +8,7 @@
 var should = require('should'),
     LruMap = require('..');
 
-describe('lrumap', function() {
+describe('LruMap', function() {
     it('should construct with no arguments', function() {
         var map = new LruMap();
         should(map).be.instanceOf(LruMap);
@@ -45,10 +45,9 @@ describe('lrumap', function() {
         should(map.delOldestWhile).be.instanceOf(Function);
         should(map.delNewestWhile).be.instanceOf(Function);
     });
-    it('should work correctly before setting a key', function() {
-        var map = new LruMap(),
-            flag;
-
+    function isEmpty(map) {
+        var flag;
+        
         should(map.length).be.equal(0);
 
         should(map.newestKey()).be.equal(undefined);
@@ -110,6 +109,11 @@ describe('lrumap', function() {
             flag = true;
         }, false)).be.equal(false);
         should(flag).be.equal(false);
+    }
+    it('should work correctly before setting a key', function() {
+        var map = new LruMap();
+        
+        isEmpty(map);
     });
     it('should store and retrieve data', function() {
         var map = new LruMap();
@@ -157,6 +161,44 @@ describe('lrumap', function() {
         
         should(map.oldestKeys()).be.deepEqual(['a', 'b']);
         should(map.newestKeys()).be.deepEqual(['b', 'a']);
+    });
+    it('should handle deleting first, middle, last', function() {
+        var map = new LruMap();
+
+        var populate = function(map) {
+            map.length = 0;
+            for (var i = 1; i <= 5; ++i)
+                map.set(i, 'value_' + i);
+        };
+        var count = function(map) {
+            return map.reduce(function(total) {
+                return total + 1;
+            }, 0);
+        };
+        
+        populate(map);
+        should(map.del('1')).be.true;
+        should(map.oldestKey()).be.equal('2');
+        should(map.oldestValue()).be.equal('value_2');
+        should(map.newestKey()).be.equal('5');
+        should(map.newestValue()).be.equal('value_5');
+        should(count(map)).be.equal(4);
+
+        populate(map);
+        should(map.del('3')).be.true;
+        should(map.oldestKey()).be.equal('1');
+        should(map.oldestValue()).be.equal('value_1');
+        should(map.newestKey()).be.equal('5');
+        should(map.newestValue()).be.equal('value_5');
+        should(count(map)).be.equal(4);
+
+        populate(map);
+        should(map.del('5')).be.true;
+        should(map.oldestKey()).be.equal('1');
+        should(map.oldestValue()).be.equal('value_1');
+        should(map.newestKey()).be.equal('4');
+        should(map.newestValue()).be.equal('value_4');
+        should(count(map)).be.equal(4);
     });
     it('should preserve value types', function () {
         var map = new LruMap(),
@@ -283,6 +325,8 @@ describe('lrumap', function() {
             map.set(i, 'value_' + i);
         
         map.length = 0;
+        
+        isEmpty(map);
     });
     it('should insert 10k items fast', function() {
         var map = new LruMap();
