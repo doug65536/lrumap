@@ -42,7 +42,7 @@ testmap.length = 0;
 
 ## API
 
-### new LruMap()
+### `new LruMap()`
 
 Creates a new empty map.
 
